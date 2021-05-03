@@ -1,0 +1,96 @@
+#
+# spec file template for package sca-L0
+#
+# Copyright (c) 2020 SUSE LINUX GmbH, Nuernberg, Germany.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
+
+%define sca_L0_version x
+%define sca_datasets_version y
+%define sca_susedata_version z
+
+Name:           sca-L0
+Version:        %{sca_L0_version}
+Release:        0
+Summary:	Level 0 Supportconfig Analysis Utility
+License:	GPL-2.0
+Group:		Tools
+Source:		sca-L0-%{sca_L0_version}.tgz
+Source1:	sca-datasets-%{sca_datasets_version}.tgz
+Source2:	sca-susedata-%{sca_susedata_version}.tgz
+Requires:	python3-numpy python3-pandas python3-scikit-learn
+Requires:	sca-susedata
+Requires:	sca-datasets
+Requires:	tar
+Requires:	util-linux
+Requires:	bc
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
+%package -n sca-datasets
+Summary:        Supportconfig Datasets
+
+%package -n sca-susedata
+Summary:        SUSE Product Data for Supportconfig Analyzer
+
+%description
+sca-L0 contains Level 0 utilities for analyzing supportconfigs.
+
+%description -n sca-datasets
+sca-datasets contains existing SUSE supportconfig data provided via vectorized datasets.
+
+%description -n sca-susedata
+sca-susedata contains SUSE product data (support lifecycles, rpm versions, etc.) for SUSE products.
+
+%prep
+# Unpack scripts, datasets, and susedata
+%setup -c sca 
+%setup -c sca -D -a 1
+%setup -c sca -D -a 2 
+
+%install
+# runtime scripts
+mkdir -p %{buildroot}/opt/suse/sca/bin
+install -c -m 644 sca-L0-%{sca_L0_version}/sca-L0.conf %{buildroot}/etc/
+install -c -m 755 sca-L0-%{sca_L0_version}/*.sh %{buildroot}/opt/suse/sca/bin/
+install -c -m 644 sca-L0-%{sca_L0_version}/*.py %{buildroot}/opt/suse/sca/bin/
+# datasets
+mkdir -p %{buildroot}/opt/suse/sca/datasets
+install -c -m 644 datasets-%{sca_datasets_version}/* %{buildroot}/opt/suse/sca/datasets/
+# susedata
+mkdir -p %{buildroot}/opt/suse/sca/susedata
+install -c -m 644 susedata-%{sca_susedata_version}/* %{buildroot}/opt/suse/sca/susedata/
+
+%post
+
+%postun
+
+%files
+%defattr(-,root,root)
+%dir /opt/suse
+%dir /opt/suse/sca
+/opt/suse/sca/bin
+%config /etc/sca-L0.conf
+
+%files -n sca-datasets
+%defattr(-,root,root)
+%dir /opt/suse
+%dir /opt/suse/sca
+/opt/suse/sca/datasets
+
+%files -n sca-susedata
+%defattr(-,root,root)
+%dir /opt/suse
+%dir /opt/suse/sca
+/opt/suse/sca/susedata
+
+%changelog
