@@ -78,4 +78,3 @@ Two source packages:
     * sca-L0: runtime scripts
     * sca-datasets: datasets containing info from rawdata supportconfigs
     * sca-susedata: lifecycle and rpm package info for SLE versions
-"README.md" 36L, 1515C                                                                                                    5,0-1         Top
