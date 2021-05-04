@@ -332,9 +332,9 @@ function msgsCmds() {
 	log ">>> Checking $msgsType message commands..."
 	[ $DEBUG ] && log "*** DEBUG: $0: msgsType: $msgsType"
 	if [ "$msgsType" = "error" ]; then
-		msgsDataTypes="$SCA_ERR_MSG_CMDS_DATATYPES"
+		msgsDataTypes="$SCA_ERR_CMDS_DATATYPES"
 	elif [ "$msgsType" = "warning" ]; then
-		msgsDataTypes="$SCA_WARN_MSG_CMDS_DATATYPES"
+		msgsDataTypes="$SCA_WARN_CMDS_DATATYPES"
 	else
 		log "        Unusupported message type"
 	fi
