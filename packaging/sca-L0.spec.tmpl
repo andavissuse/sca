@@ -29,8 +29,8 @@ Source:		sca-L0-%{sca_L0_version}.tgz
 Source1:	sca-datasets-%{sca_datasets_version}.tgz
 Source2:	sca-susedata-%{sca_susedata_version}.tgz
 Requires:	python3-numpy python3-pandas python3-scikit-learn
-Requires:	sca-susedata
-Requires:	sca-datasets
+Requires:	sca-datasets = %{sca_datasets_version}
+Requires:	sca-susedata = %{sca_susedata_version}
 Requires:	tar
 Requires:	util-linux
 Requires:	bc
