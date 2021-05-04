@@ -71,10 +71,11 @@ Note: Any situation where sca-L0 does not/cannot determine category info will re
 * No-ranking (0):	Any other result
 
 # Packaging
-Packages are built in https://build.opensuse.org/project/show/home:andavis:sca-L0
-Two source packages:
+sca-L0 packages are built in https://build.opensuse.org/project/show/home:andavis:sca
+
+Source package:
 * sca-L0
-  * Binary packages:
-    * sca-L0: runtime scripts
-    * sca-datasets: datasets containing info from rawdata supportconfigs
-    * sca-susedata: lifecycle and rpm package info for SLE versions
+Binary packages:
+* sca-L0: runtime scripts
+* sca-datasets: datasets containing info from rawdata supportconfigs
+* sca-susedata: lifecycle and rpm package info for SLE versions
