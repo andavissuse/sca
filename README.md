@@ -24,11 +24,11 @@ To analyze a supportconfig:
   * Vectorizes other features/information then performs nearest-neighbor analysis to find similar supportconfigs (with related bugs/SRs/certs).
 
 # sca-L0 results
-By default, sca-L0 will output information for the default set of categories: os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs.
+By default, sca-L0 outputs information for the default set of categories: os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs.
 
 Long-form output (to stdout) and short-form output (to file specified with -o option) provide the same information, just in different formats.  Both outputs also provide an overall "good/bad/no-ranking" result for each category.  The "good/bad/no-ranking" results for each category are determined as follows.
 
-Note: Any situation where sca-L0 does not/cannot determine category info will result in a "no-ranking" result. 
+Note: Any situation where sca-L0 does not/cannot determine category info will cause a "no-ranking" result. 
 
 ## os
 * Good (1):	OS version is supported (no LTSS or other custom support contract required)
