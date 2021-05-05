@@ -57,7 +57,7 @@ fi
 tmpDir=`mktemp -d --tmpdir="$tmpPath"`
 
 # Pull version from code
-scaL0version=`grep "^VERSION=" "$SCA_BIN_PATH"/sca-L0.sh | cut -d"=" -f2`
+scaL0version=`grep "^VERSION=" "$SCA_BIN_PATH"/sca-L0.sh | cut -d"=" -f2 | sed 's/"//g'`
 scaDatasetsVersion=`cat "$SCA_DATASETS_PATH"/version`
 scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 [ $DEBUG ] && echo "*** DEBUG: $0: scaL0version: $scaL0version"
