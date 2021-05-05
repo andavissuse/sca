@@ -34,10 +34,11 @@ Requires:	sca-susedata = %{sca_susedata_version}
 Requires:	tar
 Requires:	util-linux
 Requires:	bc
+Obsoletes:	sca-datasets-suse
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %package -n sca-datasets
-Summary:        Supportconfig Datasets
+Summary:        Datasets for Supportconfig Analyzer
 
 %package -n sca-susedata
 Summary:        SUSE Product Data for Supportconfig Analyzer
@@ -49,7 +50,7 @@ sca-L0 contains Level 0 utilities for analyzing supportconfigs.
 sca-datasets contains existing SUSE supportconfig data provided via vectorized datasets.
 
 %description -n sca-susedata
-sca-susedata contains SUSE product data (support lifecycles, rpm versions, etc.) for SUSE products.
+sca-susedata contains support-relevant data (lifecycles, rpm versions, etc.) for SUSE products.
 
 %prep
 # Unpack scripts, datasets, and susedata
@@ -58,17 +59,18 @@ sca-susedata contains SUSE product data (support lifecycles, rpm versions, etc.)
 %setup -c sca -D -a 2 
 
 %install
-# runtime scripts
+# sca-L0
+mkdir -p %{buildroot}/etc
 mkdir -p %{buildroot}/opt/suse/sca/bin
 install -c -m 644 sca-L0-%{sca_L0_version}/sca-L0.conf %{buildroot}/etc/
 install -c -m 755 sca-L0-%{sca_L0_version}/*.sh %{buildroot}/opt/suse/sca/bin/
 install -c -m 644 sca-L0-%{sca_L0_version}/*.py %{buildroot}/opt/suse/sca/bin/
-# datasets
+# sca-datasets
 mkdir -p %{buildroot}/opt/suse/sca/datasets
-install -c -m 644 datasets-%{sca_datasets_version}/* %{buildroot}/opt/suse/sca/datasets/
-# susedata
+install -c -m 644 sca-datasets-%{sca_datasets_version}/* %{buildroot}/opt/suse/sca/datasets/
+# sca-susedata
 mkdir -p %{buildroot}/opt/suse/sca/susedata
-install -c -m 644 susedata-%{sca_susedata_version}/* %{buildroot}/opt/suse/sca/susedata/
+install -c -m 644 sca-susedata-%{sca_susedata_version}/* %{buildroot}/opt/suse/sca/susedata/
 
 %post
 
