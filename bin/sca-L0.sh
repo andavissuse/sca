@@ -535,8 +535,9 @@ function srsBugs() {
 # main routine
 #
 
-# version
+# version and current path
 VERSION="0.0.3"
+curPath=`dirname "$(realpath "$0")"`
 
 # arguments
 if [ "$1" = "--help" ]; then
@@ -603,7 +604,7 @@ confFile="/usr/etc/sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
 confFile="/etc/sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
-confFile="../sca-L0.conf"
+confFile="$curPath/../sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
 if [ -z "$SCA_HOME" ]; then
 	exitError "No sca-L0.conf file info; exiting..."
