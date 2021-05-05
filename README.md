@@ -3,11 +3,14 @@ Utility for doing "Level 0" analysis on supportconfigs (top-level executable is 
 
 # Structure
 
-## configs directory
-config file(s) containing variables (e.g., paths, datatypes) for use by scripts
+## sca-L0.conf 
+Config file containing variables (e.g., paths, datatypes) for use by scripts
+
+## sca-L0.version
+sca-L0 version file
 
 ## bin directory
-bash and python scripts to analyze supportconfigs.
+bash and python scripts to analyze supportconfigs
 
 ## packaging directory
 bash scripts to create files for packaging

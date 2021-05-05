@@ -66,7 +66,9 @@ scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 
 # sca-L0 files (modify config file if/as needed for external use)
 mkdir "$tmpDir"/sca-L0-"$scaL0version"
-cp "$confFile" "$tmpDir"/sca-L0-"$scaL0version"/
+confFileName=`basename $confFile`
+cp "$SCA_HOME"/"$confFileName".prod "$tmpDir"/sca-L0-"$scaL0version"/$confFileName
+cp "$SCA_HOME"/sca-L0.version "$tmpDir"/sca-L0-"$scaL0Version"/sca-L0.version
 cp "$SCA_BIN_PATH"/*.sh "$tmpDir"/sca-L0-"$scaL0version"/
 cp "$SCA_BIN_PATH"/*.py "$tmpDir"/sca-L0-"$scaL0version"/
 

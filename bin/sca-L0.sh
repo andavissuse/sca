@@ -605,7 +605,7 @@ confFile="../sca-L0.conf"
 if [ -z "$SCA_HOME" ]; then
 	exitError "No sca-L0.conf file info; exiting..."
 fi
-VERSION=`cat "$SCA_HOME"/version`
+VERSION=`cat "$SCA_HOME"/sca-L0.version`
 
 #
 # set variables (command-line opts override conf file)
