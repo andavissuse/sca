@@ -6,9 +6,6 @@ Utility for doing "Level 0" analysis on supportconfigs (top-level executable is 
 ## sca-L0.conf 
 Config file containing variables (e.g., paths, datatypes) for use by scripts
 
-## sca-L0.version
-sca-L0 version file
-
 ## bin directory
 bash and python scripts to analyze supportconfigs
 

@@ -57,7 +57,7 @@ fi
 tmpDir=`mktemp -d --tmpdir="$tmpPath"`
 
 # Pull version from code
-scaL0version=`cat "$SCA_HOME"/sca-L0.version`
+scaL0version=`grep "^VERSION=" "$SCA_BIN_PATH"/sca-L0.sh | cut -d"=" -f2`
 scaDatasetsVersion=`cat "$SCA_DATASETS_PATH"/version`
 scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 [ $DEBUG ] && echo "*** DEBUG: $0: scaL0version: $scaL0version"
@@ -68,7 +68,6 @@ scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 mkdir "$tmpDir"/sca-L0-"$scaL0version"
 confFileName=`basename $confFile`
 cp "$SCA_HOME"/"$confFileName".prod "$tmpDir"/sca-L0-"$scaL0version"/$confFileName
-cp "$SCA_HOME"/sca-L0.version "$tmpDir"/sca-L0-"$scaL0version"/sca-L0.version
 cp "$SCA_BIN_PATH"/*.sh "$tmpDir"/sca-L0-"$scaL0version"/
 cp "$SCA_BIN_PATH"/*.py "$tmpDir"/sca-L0-"$scaL0version"/
 
