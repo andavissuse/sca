@@ -40,12 +40,22 @@ else
         scDir="$1"
 fi
 
-SCABIN=`dirname "$(realpath "$0")"`
+# config file
+curPath=`dirname "$(realpath "$0")"`
+confFile="/usr/etc/sca-L0.conf"
+[ -r "$confFile" ] && source ${confFile}
+confFile="/etc/sca-L0.conf"
+[ -r "$confFile" ] && source ${confFile}
+confFile="$curPath/../sca-L0.conf"
+[ -r "$confFile" ] && source ${confFile}
+if [ -z "$SCA_HOME" ]; then
+        exitError "No sca-L0.conf file info; exiting..."
+fi
 
 logName="/var/log/messages"
 if [ $DEBUG ]; then
-	$SCABIN/messages-cmds.sh -d $scDir $logName error
+	$SCA_BIN_PATH/messages-cmds.sh -d $scDir $logName error
 else
-	$SCABIN/messages-cmds.sh $scDir $logName error
+	$SCA_BIN_PATH/messages-cmds.sh $scDir $logName error
 fi
 exit 0

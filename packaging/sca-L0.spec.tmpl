@@ -66,6 +66,7 @@ sca-susedata contains support-relevant data (lifecycles, rpm versions, etc.) for
 mkdir -p %{buildroot}/etc
 mkdir -p %{buildroot}/opt/suse/sca/bin
 install -c -m 644 sca-L0-%{sca_L0_version}/sca-L0.conf %{buildroot}/etc/
+install -c -m 644 sca-L0-%{sca_L0_version}/README.sca-L0 %{buildroot}/opt/suse/sca/
 install -c -m 755 sca-L0-%{sca_L0_version}/*.sh %{buildroot}/opt/suse/sca/bin/
 install -c -m 644 sca-L0-%{sca_L0_version}/*.py %{buildroot}/opt/suse/sca/bin/
 # sca-datasets
@@ -83,6 +84,7 @@ install -c -m 644 sca-susedata-%{sca_susedata_version}/* %{buildroot}/opt/suse/s
 %defattr(-,root,root)
 %dir /opt/suse
 %dir /opt/suse/sca
+/opt/suse/sca/README.sca-L0
 /opt/suse/sca/bin
 %config /etc/sca-L0.conf
 

@@ -45,7 +45,9 @@ while getopts 'hdc:t:' OPTION; do
 done
 
 # This script is not in the package, so only look for confFile in parent directory 
-confFile="../sca-L0.conf"
+curPath=`dirname "$(realpath "$0")"`
+confFile="$curPath/../sca-L0.conf"
+readmeFile="$curPath/../README.md"
 source "$confFile"
 [ $DEBUG ] && echo "*** DEBUG: $0: SCA_BIN_PATH: $SCA_BIN_PATH"
 [ $DEBUG ] && echo "*** DEBUG: $0: SCA_DATASETS_PATH: $SCA_DATASETS_PATH"
@@ -64,10 +66,12 @@ scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 [ $DEBUG ] && echo "*** DEBUG: $0: scaDatasetsVersion: $scaDatasetsVersion"
 [ $DEBUG ] && echo "*** DEBUG: $0: scaSusedataVersion: $scaSusedataVersion"
 
-# sca-L0 files (modify config file if/as needed for external use)
+# sca-L0 files (use production config file)
 mkdir "$tmpDir"/sca-L0-"$scaL0version"
 confFileName=`basename $confFile`
+readmeFileName=`basename $readmeFile`
 cp "$SCA_HOME"/"$confFileName".prod "$tmpDir"/sca-L0-"$scaL0version"/$confFileName
+cp "$SCA_HOME"/"$readmeFileName" "$tmpDir"/sca-L0-"$scaL0version"/README.sca-L0
 cp "$SCA_BIN_PATH"/*.sh "$tmpDir"/sca-L0-"$scaL0version"/
 cp "$SCA_BIN_PATH"/*.py "$tmpDir"/sca-L0-"$scaL0version"/
 

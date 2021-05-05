@@ -535,9 +535,8 @@ function srsBugs() {
 # main routine
 #
 
-# version and current path
-VERSION="0.0.3"
-curPath=`dirname "$(realpath "$0")"`
+# version
+VERSION="0.0.4"
 
 # arguments
 if [ "$1" = "--help" ]; then
@@ -600,6 +599,7 @@ fi
 #
 # read conf file
 #
+curPath=`dirname "$(realpath "$0")"`
 confFile="/usr/etc/sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
 confFile="/etc/sca-L0.conf"
