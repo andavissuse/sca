@@ -48,29 +48,29 @@ msgType="$3"
 
 msgFile="$scDir/messages.txt"
 if [ ! -f $msgFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $msgFile does not exist."
+	[ $DEBUG ] && echo "*** DEBUG: $0: $msgFile does not exist, exiting..." >&2
 	exit 1	
 fi
 
 tmpDir=`mktemp -d`
 grep -na "^# /" $msgFile > $tmpDir/sub-log-info.tmp
 logLineNum=`grep "# $logName" $tmpDir/sub-log-info.tmp | cut -d":" -f1`
-[ $DEBUG ] && echo "*** DEBUG: $0: logLineNum: $logLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: logLineNum: $logLineNum" >&2
 if ! echo $logLineNum | cut -d" " -f1 | grep -q "[0-9]"; then
-        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName entry in $msgFile"
+        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName entry in $msgFile" >&2
         rm -rf $tmpDir
         exit 1
 fi
 startLineNum=$(( logLineNum + 1 ))
-[ $DEBUG ] && echo "*** DEBUG: $0: startLineNum: $startLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: startLineNum: $startLineNum" >&2
 nextLogLineNum=`grep "# $logName" $tmpDir/sub-log-info.tmp -A 1 | tail -1 | cut -d":" -f1`
-[ $DEBUG ] && echo "*** DEBUG: $0: nextLogLineNum: $nextLogLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: nextLogLineNum: $nextLogLineNum" >&2
 if (( nextLogLineNum == logLineNum )); then
         endLineNum=`wc -l $msgFile | cut -d" " -f1`
 else
         endLineNum=$(( nextLogLineNum - 2 ))
 fi
-[ $DEBUG ] && echo "*** DEBUG: $0: endLineNum: $endLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: endLineNum: $endLineNum" >&2
 
 cat $msgFile | sed -n "${startLineNum},${endLineNum}p" > $tmpDir/sub-log.tmp
 grep -i "$msgType" "$tmpDir"/sub-log.tmp | cut -d" " -f1-7 > "$tmpDir"/msgs.tmp
@@ -82,7 +82,7 @@ cat "$tmpDir"/msgs-f1NumT-f37.tmp | grep -v -E "^Jan|^Feb|^Mar|^Apr|^May|^Jun|^J
 cat "$tmpDir"/msgs.tmp | grep -E "^Jan|^Feb|^Mar|^Apr|^May|^Jun|^Jul|^Aug|^Sep|^Oct|^Nov|^Dec" | cut -d" " -f5 | sort -u >> "$tmpDir"/cmdfields.tmp
 sort -o "$tmpDir"/cmdfields.tmp "$tmpDir"/cmdfields.tmp
 if [ ! -s $tmpDir/cmdfields.tmp ]; then
-        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName $msgType lines found"
+        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName $msgType lines found" >&2
         rm -rf $tmpDir
         exit 0
 fi
@@ -114,7 +114,7 @@ cat "$tmpDir/cmdfields.tmp" | while read cmd; do
 	if ! echo "$cmd" | grep -q "[a-zA-Z]"; then
                 continue
         fi
-	[ $DEBUG ] && echo "*** DEBUG: $0: cmd: $cmd"
+	[ $DEBUG ] && echo "*** DEBUG: $0: cmd: $cmd" >&2
 
 	echo "$cmd" >> "$tmpDir"/cmds.tmp
 done

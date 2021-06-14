@@ -1,0 +1,74 @@
+#
+# sca-L0 configuration file
+#
+
+# Environment
+SCA_HOME="/opt/suse/sca"
+SCA_BIN_PATH="$SCA_HOME/bin"
+SCA_DATASETS_PATH="$SCA_HOME/datasets"
+SCA_SUSEDATA_PATH="$SCA_HOME/susedata"
+SCA_TMP_PATH="/tmp"
+
+# Default categories to check
+SCA_CATEGORIES="os system kernel kmods warning-cmds error-cmds srs bugs"
+
+# Messages datatypes
+SCA_JCTL_DATATYPES="jctl-err-cmds jctl-warn-cmds jctl-err-kwds jctl-warn-kwds"
+SCA_LMSGS_DATATYPES="lmsgs-err-cmds lmsgs-warn-cmds lmsgs-err-kwds lmsgs-warn-kwds"
+SCA_MSGS_DATATYPES="msgs-err-cmds msgs-warn-cmds msgs-err-kwds msgs-warn-kwds"
+SCA_WARN_DATATYPES="warn-err-cmds warn-warn-cmds warn-err-kwds warn-warn-kwds"
+
+# System datatypes
+SCA_SYSTEM_DATATYPES="system-manufacturers system-models"
+
+# Kernel datatypes
+SCA_KERNEL_DATATYPES="kernels kmods-suse"
+
+# Hardware datatypes
+SCA_HW_DATATYPES="hw-netcards hw-storage-ctrls"
+
+# All datatypes
+SCA_ALL_DATATYPES="$SCA_JCTL_DATATYPES $SCA_LMSGS_DATATYPES $SCA_MSGS_DATATYPES $SCA_WARN_DATATYPES $SCA_SYSTEM_DATATYPES $SCA_KERNEL_DATATYPES $SCA_HW_DATATYPES"
+
+# Datatypes for finding warning and error message commands
+SCA_ERR_CMDS_DATATYPES="jctl-err-cmds lmsgs-err-cmds msgs-err-cmds warn-err-cmds"
+SCA_WARN_CMDS_DATATYPES="jctl-warn-cmds lmsgs-warn-cmds msgs-warn-cmds warn-warn-cmds"
+
+# Datatypes for finding SRs and bugs
+SCA_SRS_BUGS_DATATYPES="$SCA_JCTL_DATATYPES $SCA_LMSGS_DATATYPES $SCA_MSGS_DATATYPES $SCA_WARN_DATATYPES"
+
+# Datatype metrics - change as needed to improve nearest neighbor results
+SCA_JCTL_ERR_CMDS_METRIC="jaccard"
+SCA_JCTL_WARN_CMDS_METRIC="jaccard"
+SCA_JCTL_ERR_KWDS_METRIC="jaccard"
+SCA_JCTL_WARN_KWDS_METRIC="jaccard"
+SCA_LMSGS_ERR_CMDS_METRIC="jaccard"
+SCA_LMSGS_WARN_CMDS_METRIC="jaccard"
+SCA_LMSGS_ERR_KWDS_METRIC="jaccard"
+SCA_LMSGS_WARN_KWDS_METRIC="jaccard"
+SCA_MSGS_ERR_CMDS_METRIC="jaccard"
+SCA_MSGS_WARN_CMDS_METRIC="jaccard"
+SCA_MSGS_ERR_KWDS_METRIC="jaccard"
+SCA_MSGS_WARN_KWDS_METRIC="jaccard"
+SCA_WARN_ERR_CMDS_METRIC="jaccard"
+SCA_WARN_WARN_CMDS_METRIC="jaccard"
+SCA_WARN_ERR_KWDS_METRIC="jaccard"
+SCA_WARN_WARN_KWDS_METRIC="jaccard"
+
+# Datatype weights - change as needed to improve nearest neighbor results
+SCA_JCTL_ERR_CMDS_WEIGHT="1"
+SCA_JCTL_WARN_CMDS_WEIGHT="1"
+SCA_JCTL_ERR_KWDS_WEIGHT="1"
+SCA_JCTL_WARN_KWDS_WEIGHT="1"
+SCA_LMSGS_ERR_CMDS_WEIGHT="1"
+SCA_LMSGS_WARN_CMDS_WEIGHT="1"
+SCA_LMSGS_ERR_KWDS_WEIGHT="1"
+SCA_LMSGS_WARN_KWDS_WEIGHT="1"
+SCA_MSGS_ERR_CMDS_WEIGHT="1"
+SCA_MSGS_WARN_CMDS_WEIGHT="1"
+SCA_MSGS_ERR_KWDS_WEIGHT="1"
+SCA_MSGS_WARN_KWDS_WEIGHT="1"
+SCA_WARN_ERR_CMDS_WEIGHT="1"
+SCA_WARN_WARN_CMDS_WEIGHT="1"
+SCA_WARN_ERR_KWDS_WEIGHT="1"
+SCA_WARN_WARN_KWDS_WEIGHT="1"

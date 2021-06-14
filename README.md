@@ -9,6 +9,12 @@ Config file containing variables (e.g., paths, datatypes) for use by scripts
 ## bin directory
 bash and python scripts to analyze supportconfigs
 
+## datasets directory
+datasets used for supportconfig analysis
+
+## susedata directory
+SUSE info (product lifecycles, rpm versions, rpm files)  used for supportconfig analysis
+
 ## packaging directory
 bash scripts to create files for packaging
 

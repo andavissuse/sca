@@ -49,40 +49,40 @@ msgType="$3"
 
 msgFile="$scDir/messages.txt"
 if [ ! -f $msgFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $msgFile does not exist."
+	[ $DEBUG ] && echo "*** DEBUG: $0: $msgFile does not exist, exiting..." >&2
 	exit 1	
 fi
 
 tmpDir=`mktemp -d`
 grep -na "^# /" $msgFile > $tmpDir/sub-log-info.tmp
 logLineNum=`grep "# $logName" $tmpDir/sub-log-info.tmp | cut -d":" -f1`
-[ $DEBUG ] && echo "*** DEBUG: $0: logLineNum: $logLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: logLineNum: $logLineNum" >&2
 if ! echo $logLineNum | cut -d" " -f1 | grep -q "[0-9]"; then
-        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName entry in $msgFile"
+        [ $DEBUG ] && echo "*** DEBUG: $0: No $logName entry in $msgFile" >&2
         rm -rf $tmpDir
         exit 1
 fi
 startLineNum=$(( logLineNum + 1 ))
-[ $DEBUG ] && echo "*** DEBUG: $0: startLineNum: $startLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: startLineNum: $startLineNum" >&2
 nextLogLineNum=`grep "# $logName" $tmpDir/sub-log-info.tmp -A 1 | tail -1 | cut -d":" -f1`
-[ $DEBUG ] && echo "*** DEBUG: $0: nextLogLineNum: $nextLogLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: nextLogLineNum: $nextLogLineNum" >&2
 if (( nextLogLineNum == logLineNum )); then
         endLineNum=`wc -l $msgFile | cut -d" " -f1`
 else
         endLineNum=$(( nextLogLineNum - 2 ))
 fi
-[ $DEBUG ] && echo "*** DEBUG: $0: endLineNum: $endLineNum"
+[ $DEBUG ] && echo "*** DEBUG: $0: endLineNum: $endLineNum" >&2
 
 # get error/warning lines from the sub log
-[ $DEBUG ] && echo "*** DEBUG: $0: getting error/warning lines from sub log..."
+[ $DEBUG ] && echo "*** DEBUG: $0: getting error/warning lines from sub log..." >&2
 cat $msgFile | sed -n "${startLineNum},${endLineNum}p" > $tmpDir/sub-log.tmp
 grep -i "$msgType" "$tmpDir"/sub-log.tmp > "$tmpDir"/msgs.tmp
 
 # get all words that are 4 characters or more
-[ $DEBUG ] && echo "*** DEBUG: $0: getting words with 4 or more characters..."
+[ $DEBUG ] && echo "*** DEBUG: $0: getting words with 4 or more characters..." >$2
 grep -o " [a-zA-Z]\{4,\} " "$tmpDir"/msgs.tmp | grep -o "\S*[g-z]\S*" | tr '[:upper:]' '[:lower:]' | sort -u > "$tmpDir"/words.tmp
 # ignore prepositions and other common words
-[ $DEBUG ] && echo "*** DEBUG: $0: removing prepositions and other common words..."
+[ $DEBUG ] && echo "*** DEBUG: $0: removing prepositions and other common words..." >&2
 grep -v -E "above|about|again|already|also|another|around|because|before|belong|between|cannot|could|does|doing|during|error|from|must|should|such|their|these|this|until|warn|warning|when|which|while|will|with|your" "$tmpDir"/words.tmp > "$tmpDir"/kwds.tmp
 if [ ! -f $tmpDir/kwds.tmp ]; then
 	rm -rf $tmpDir

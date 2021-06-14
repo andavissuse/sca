@@ -41,7 +41,7 @@ fi
 
 basicHealthFile="$scDir/basic-health-check.txt"
 if [ ! -f $basicHealthFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $basicHealthFile does not exist."
+	[ $DEBUG ] && echo "*** DEBUG: $0: $basicHealthFile does not exist, exiting..." >&2
 	exit 1
 fi
 

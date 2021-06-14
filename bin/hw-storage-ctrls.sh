@@ -42,22 +42,22 @@ fi
 # get network hardware PCI IDs from hardware.txt file
 hwFile="$scDir/hardware.txt"
 if [ ! -f $hwFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $hwFile does not exist."
+	[ $DEBUG ] && echo "*** DEBUG: $0: $hwFile does not exist, exiting..." >&2
         exit 1
 fi
 tmpDir=`mktemp -d`
 for storageLine in `grep -n "^  Hardware Class: storage$" $hwFile | cut -d":" -f1`; do
-        [ $DEBUG ] && echo "*** DEBUG: $0: storageLine: $storageLine"
+        [ $DEBUG ] && echo "*** DEBUG: $0: storageLine: $storageLine" >&2
         tail -n +${storageLine} $hwFile | while IFS= read -r line && [[ ! -z $line ]]; do
-		[ $DEBUG ] && echo "*** DEBUG: $0: line: $line"
+		[ $DEBUG ] && echo "*** DEBUG: $0: line: $line" >&2
                 if echo "$line" | grep -q "^  Vendor:"; then
 			vendorId=`echo "$line" | grep -o "0x[0-9a-f]*"`
-                        [ $DEBUG ] && echo "*** DEBUG: $0: vendorId: $vendorId"
+                        [ $DEBUG ] && echo "*** DEBUG: $0: vendorId: $vendorId" >&2
 			echo -n "$vendorId:" >> $tmpDir/storage-ctrl-pciids.tmp
 		fi
 		if echo "$line" | grep -q "^  Device:"; then
 			deviceId=`echo "$line" | grep -o "0x[0-9a-f]*"`
-			[ $DEBUG ] && echo "*** DEBUG: $0: deviceId: $deviceId"
+			[ $DEBUG ] && echo "*** DEBUG: $0: deviceId: $deviceId" >&2
 			echo "$deviceId" >> $tmpDir/storage-ctrl-pciids.tmp
 			break
 		fi

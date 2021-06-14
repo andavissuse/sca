@@ -42,19 +42,19 @@ fi
 
 rpmFile="$scDir/rpm.txt"
 if [ ! -f $rpmFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $rpmFile does not exist."
+	[ $DEBUG ] && echo "*** DEBUG: $0: $rpmFile does not exist, exiting..." >&2
 	exit 1
 fi
 
 rpmListSectionLine=`cat $rpmFile | grep -n "^# rpm -qa --queryformat \"%-35{NAME}" | cut -d":" -f1`
 lineNo=0
 while IFS= read -r line; do
-	[ $DEBUG ] && echo "*** DEBUG: $0: line: $line"
+	[ $DEBUG ] && echo "*** DEBUG: $0: line: $line" >&2
 	if [ "$lineNo" -gt "$rpmListSectionLine" ]; then
 		rpmName=`echo $line | cut -d" " -f1`
-		[ $DEBUG ] && echo "*** DEBUG: $0: rpmName: $rpmName"
+		[ $DEBUG ] && echo "*** DEBUG: $0: rpmName: $rpmName" >&2
 		rpmDist=`echo $line | cut -d" " -f2 | sed -e 's/ /_/g'`
-		[ $DEBUG ] && echo "*** DEBUG: $0: rpmDist: $rpmDist"
+		[ $DEBUG ] && echo "*** DEBUG: $0: rpmDist: $rpmDist" >&2
 		if [ -z $rpmName ]; then
 			break
 		fi

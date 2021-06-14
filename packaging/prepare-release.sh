@@ -70,7 +70,8 @@ scaSusedataVersion=`cat "$SCA_SUSEDATA_PATH"/version`
 mkdir "$tmpDir"/sca-L0-"$scaL0version"
 confFileName=`basename $confFile`
 readmeFileName=`basename $readmeFile`
-cp "$SCA_HOME"/"$confFileName".prod "$tmpDir"/sca-L0-"$scaL0version"/$confFileName
+# Use conf file with appropriate values for package
+cp "$curPath"/$confFileName.pkg "$tmpDir"/sca-L0-"$scaL0version"/$confFileName
 cp "$SCA_HOME"/"$readmeFileName" "$tmpDir"/sca-L0-"$scaL0version"/README.sca-L0
 cp "$SCA_BIN_PATH"/*.sh "$tmpDir"/sca-L0-"$scaL0version"/
 cp "$SCA_BIN_PATH"/*.py "$tmpDir"/sca-L0-"$scaL0version"/
