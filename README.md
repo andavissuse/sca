@@ -1,3 +1,6 @@
+# Addition for debug
+branch1 info
+
 # sca-L0
 Utility for doing "Level 0" analysis on supportconfigs (top-level executable is sca-L0.sh).  Directly reports some info; for other info, performs nearest-neighbor analysis to find similar supportconfigs from YES certifications, SRs, and bugs.  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
