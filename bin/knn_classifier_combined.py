@@ -13,6 +13,8 @@
 #         the existence of an SR or bug 
 #
 
+from __future__ import print_function
+
 import getopt
 import sys
 import os
@@ -21,7 +23,7 @@ from sklearn.neighbors import NearestNeighbors
 import knn_classifier 
 
 def usage():
-    print("Usage: " + sys.argv[0] + " [-d(ebug)] feature_files_dir outtype_dataset_file dataset_file1 distance_metric1 weight1 dataset_file2 distance_metric2 weight2 ...")
+    print("Usage: " + sys.argv[0] + " [-d(ebug)] feature_files_dir outtype_dataset_file dataset_file1 distance_metric1 weight1 dataset_file2 distance_metric2 weight2 ...", file=sys.stderr)
 
 def main(argv):
     arg_index_start = 0
@@ -47,13 +49,13 @@ def main(argv):
     if os.path.isdir(argv[arg_index_start]):
         feature_files_dir = argv[arg_index_start]
     else:
-        print("Feature directory does not exist: ", argv[arg_index_start])
+        print("Feature directory does not exist: ", argv[arg_index_start], file=sys.stderr)
         usage()
         sys.exit(2)
     if os.path.isfile(argv[arg_index_start + 1]):
         outtype_dataset_file = argv[arg_index_start + 1]
     else:
-        print("Out type datafile does not exist: ", argv[arg_index_start + 1])
+        print("Out type datafile does not exist: ", argv[arg_index_start + 1], file=sys.stderr)
         usage()
         sys.exit(2)
     i = 2
@@ -69,49 +71,49 @@ def main(argv):
             datatype = os.path.basename(datatype_filename.rsplit('-', 1)[0])
             datatypes.append(datatype)
         else:
-            print("Input datatype file does not exist: ", argv[arg_index_start + i])
+            print("Input datatype file does not exist: ", argv[arg_index_start + i], file=sys.stderr)
             usage()
             sys.exit(2)
         if argv[arg_index_start + (i + 1)]:
             dist_metrics.append(argv[arg_index_start + (i + 1)])
         else:
-            print("No distance metric provided for ", argv[arg_index_start + i])
+            print("No distance metric provided for ", argv[arg_index_start + i], file=sys.stderr)
             usage()
             sys.exit(2)
         if argv[arg_index_start + (i + 2)]:
             weights.append(argv[arg_index_start + (i + 2)])
         else:
-            print("No weight provided for ", argv[arg_index_start + i])
+            print("No weight provided for ", argv[arg_index_start + i], file=sys.stderr)
             usage()
             sys.exit(2)
         i = i + 3
     outtype_col_name  = "Id"
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": datatypes:", datatypes)
-        print("*** DEBUG: " + sys.argv[0] + ": dist_metrics:", dist_metrics)
-        print("*** DEBUG: " + sys.argv[0] + ": weights:", weights)
+        print("*** DEBUG: " + sys.argv[0] + ": datatypes:", datatypes, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": dist_metrics:", dist_metrics, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": weights:", weights, file=sys.stderr)
 
     cumulative_prediction = 0
     for datatype_num in range(len(datatypes)):
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": datatype_num:", datatype_num)
-            print("*** DEBUG: " + sys.argv[0] + ": datatype:", datatypes[datatype_num])
+            print("*** DEBUG: " + sys.argv[0] + ": datatype_num:", datatype_num, file=sys.stderr)
+            print("*** DEBUG: " + sys.argv[0] + ": datatype:", datatypes[datatype_num], file=sys.stderr)
         features_file = feature_files_dir + "/" + datatype + ".tmp"
         if not os.path.isfile(features_file):
-            print("Features file does not exist: ", features_file)
+            print("Features file does not exist: ", features_file, file=sys.stderr)
             sys.exit(2)
         if DEBUG == "TRUE":
             debug_opt = "-d "
         knn_args = debug_opt + features_file + " " + outtype_dataset_file + " " + datatype_filenames[datatype_num] + " " + dist_metrics[datatype_num]
         prediction = knn_classifier.main(knn_args.split())
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": prediction:", prediction)
+            print("*** DEBUG: " + sys.argv[0] + ": prediction:", prediction, file=sys.stderr)
         cumulative_prediction = cumulative_prediction + prediction
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": cumulative_prediction:", cumulative_prediction)
+            print("*** DEBUG: " + sys.argv[0] + ": cumulative_prediction:", cumulative_prediction, file=sys.stderr)
     avg_prediction = cumulative_prediction/(len(datatypes))
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": avg_prediction:", avg_prediction)
+        print("*** DEBUG: " + sys.argv[0] + ": avg_prediction:", avg_prediction, file=sys.stderr)
     if avg_prediction < 0.5:
         final_prediction = 0
     else:
