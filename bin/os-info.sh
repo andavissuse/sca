@@ -89,6 +89,10 @@ case $os in
 		osName="openSUSE Leap"
 		osVer=`echo $os | cut -d'_' -f2`
 		;;
+	opensuse-tumbleweed*)
+		osName="openSUSE Tumbleweed"
+		osVer=`echo $os | cut -d'_' -f2`
+		;;
 	sle*)
 		osName=`echo $os | cut -d'_' -f1 | tr '[:lower:]' '[:upper:]'`
 		osVer=`echo $osVer | sed 's/\./ SP/'`
@@ -111,7 +115,7 @@ endLtss=`echo $lifecycleInfo | grep "$os" | cut -d',' -f4`
 endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
 [ $DEBUG ] && echo "*** DEBUG: $0: endLtss: $endLtss, endGeneral: $endGeneral" >&2
 if [ -z "$endLtss" ] || [ -z "$endGeneral" ]; then
-        echo "        Error retrieving lifecycle data for $osName $osVer $osArch"
+        echo "        No lifecycle data for $osName $osVer $osArch"
         [ $outFile ] && echo "os-support: error" >> $outFile
         [ $outFile ] && echo "os-result: 0" >> $outFile
         exit 1

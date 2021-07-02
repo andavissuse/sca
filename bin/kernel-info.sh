@@ -99,7 +99,7 @@ flavor=`echo $kern | sed "s/$kVer-//"`
 [ $DEBUG ] && echo "*** DEBUG: $0: kVer: $kVer, flavor: $flavor" >&2
 kPkg="kernel-${flavor}-${kVer}"
 if [ ! -f "$susedataPath/rpms-$os.txt" ]; then
-	echo "        No $susedataPath/rpms-$os.txt file"
+	echo "        No susedata rpm info for $os"
 	[ $outFile ] && echo "kernel-status: error" >> $outFile
 	[ $outFile ] && echo "kernel-result: 0" >> $outFile
 	exit 1

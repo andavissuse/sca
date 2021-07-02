@@ -106,8 +106,9 @@ fi
 osId=`echo $os | cut -d'_' -f1`
 osVerId=`echo $os | cut -d'_' -f2`
 osArch=`echo $os | cut -d'_' -f1,2 --complement`
-if ! ls $datasetsPath/system-model-$osId_*_$osArch.dat >/dev/null 2>&1; then
-        echo "        No $datasetsPath/system-model-$osId_* files"
+[ $DEBUG ] && echo "*** DEBUG: $0: osId: $osId, osVerId: $osVerId, osArch: $osArch"
+if ! ls $datasetsPath/system-model-"$osId"_*_"$osArch".dat >/dev/null 2>&1; then
+        echo "        No certification data for "$osId" "$osArch""
         [ $outFile ] && echo "system-certs: error" >> $outFile
         [ $outFile ] && echo "system-result: 0" >> $outFile
         exit 1

@@ -74,7 +74,7 @@ function supportconfigDate() {
 #
 
 # version
-VERSION="0.0.4"
+VERSION="devel"
 
 # arguments
 if [ "$1" = "--help" ]; then
