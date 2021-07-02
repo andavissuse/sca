@@ -63,6 +63,6 @@ for netcardLine in `grep -n "^  Hardware Class: network$" $hwFile | cut -d":" -f
 		fi
         done
 done
-cat $tmpDir/net-pciids.tmp | sort -u
+[ -f "$tmpDir/net-pciids.tmp" ] && cat $tmpDir/net-pciids.tmp | sort -u
 rm -rf $tmpDir
 exit 0 

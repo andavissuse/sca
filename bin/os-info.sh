@@ -7,10 +7,8 @@
 #	  2) susedata path
 #	  3) short-form output file (optional)
 #
-# Output: Info messages written to stdout (and output file if specified)
-#	  os-result value written to output file:  1 if OS is in general support phase
-#						   0 if OS is in LTSS phase
-#						  -1 if OS is beyond LTSS phase
+# Output: Info messages written to stdout
+#	  os, os-support, os-result name-value pairs written to output file
 #
 
 # functions
@@ -42,16 +40,11 @@ if [ ! -z "$3" ]; then
 	outFile="$3"
 fi
 
-if [ ! -d "$featuresPath" ]; then
-	echo "$0: $featuresPath does not exist, exiting..." >&2
-	exit 1
-fi
-if [ ! -d "$susedataPath" ]; then
-	echo "$0: $susedataPath does not exist, exiting..." >&2
-	exit 1
-fi
-if [ $outFile ] && [ ! -f "$outFile" ]; then
-	echo "$0: $outFile does not exist, exiting..." >&2
+if [ ! -d "$featuresPath" ] || [ ! -d "$susedataPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
+	echo "$0: features path $featuresPath, susedata path $susedataPath, or output file $outFile does not exist, exiting..." >&2
+	[ $outFile ] && echo "os: error" >> $outFile
+	[ $outFile ] && echo "os-support: error" >> $outFile
+	[ $outFile ] && echo "os-result: 0" >> $outFile
 	exit 1
 fi
 
@@ -65,20 +58,25 @@ confFile="$curPath/../sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
 if [ -z "$SCA_HOME" ]; then
         echo "No sca-L0.conf file info; exiting..." >&2
+	[ $outFile ] && echo "os: error" >> $outFile
+	[ $outFile ] && echo "os-support: error" >> $outFile
+	[ $outFile ] && echo "os-result: 0"
 	exit 1
 fi
 
-echo ">>> Checking OS version supportability..."
-curDate=`date +%Y%m%d`
+# intro
+echo ">>> Checking OS version and support status..."
+
+# os
 os=`cat "$featuresPath"/os.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
-
 if [ -z "$os" ]; then
-	echo "        OS: No info available"
-	[ $outFile ] && echo "os: no-info" >> $outFile
-	exit 0
+	echo "        Error retrieving OS info"
+	[ $outFile ] && echo "os: error" >> $outFile
+	[ $outFile ] && echo "os-support: error" >> $outFile
+	[ $outFile ] && echo "os-result: 0"
+	exit 1
 fi
-
 osName=`echo $os | cut -d'_' -f1 | tr '[:lower:]' '[:upper:]'`
 osVer=`echo $os | cut -d'_' -f2`
 osArch=`echo $os | cut -d'_' -f1,2 --complement`
@@ -89,6 +87,10 @@ case $os in
 		;;
 	opensuse-leap*)
 		osName="openSUSE Leap"
+		osVer=`echo $os | cut -d'_' -f2`
+		;;
+	opensuse-tumbleweed*)
+		osName="openSUSE Tumbleweed"
 		osVer=`echo $os | cut -d'_' -f2`
 		;;
 	sle*)
@@ -106,31 +108,31 @@ osArch=`echo $os | cut -d'_' -f1,2 --complement`
 echo "        OS: $osName $osVer $osArch"
 [ $outFile ] && echo "os: $os" >> $outFile
 
+# support status
 lifecycleInfo=`grep "$os" $susedataPath/lifecycles.csv`
 [ $DEBUG ] && echo "*** DEBUG: $0: lifecycleInfo: $lifecycleInfo" >&2
-if [ -z "$lifecycleInfo" ]; then
-	echo "        No lifecycle data available."
-	[ $outFile ] && echo "os-support: no-info" >> $outFile
+endLtss=`echo $lifecycleInfo | grep "$os" | cut -d',' -f4`
+endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
+[ $DEBUG ] && echo "*** DEBUG: $0: endLtss: $endLtss, endGeneral: $endGeneral" >&2
+if [ -z "$endLtss" ] || [ -z "$endGeneral" ]; then
+        echo "        No lifecycle data for $osName $osVer $osArch"
+        [ $outFile ] && echo "os-support: error" >> $outFile
+        [ $outFile ] && echo "os-result: 0" >> $outFile
+        exit 1
+fi
+curDate=`date +%Y%m%d`
+if (( curDate > endLtss )); then
+	echo "        Support status: Custom support contract required"
+	[ $outFile ] && echo "os-support: out-of-support" >> $outFile
+	osResult="-1"
+elif (( curDate > endGeneral )); then
+	echo "        Support status: LTSS support contract required"
+	[ $outFile ] && echo "os-support: ltss" >> $outFile
+	osResult="0"
 else
-	endLtss=`echo $lifecycleInfo | grep "$os" | cut -d',' -f4`
-	endLtssStr=`date -d$endLtss +%Y-%m-%d 2>/dev/null`
-	[ $DEBUG ] && echo "*** DEBUG: $0: endLtssStr: $endLtssStr" >&2
-	endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
-	endGeneralStr=`date -d$endGeneral +%Y-%m-%d 2>/dev/null`
-	[ $DEBUG ] && echo "*** DEBUG: $0: endGeneralStr: $endGeneralStr" >&2
-	if (( curDate > endLtss )); then
-		echo "        Support status: Custom support contract required"
-		[ $outFile ] && echo "os-support: out-of-support" >> $outFile
-		osResult="-1"
-	elif (( curDate > endGeneral )); then
-		echo "        Support status: LTSS support contract required"
-		[ $outFile ] && echo "os-support: ltss" >> $outFile
-		osResult="0"
-	else
-		echo "        Support status: Supported"
-		[ $outFile ] && echo "os-support: supported" >> $outFile
-		osResult="1"
-        fi
+	echo "        Support status: Supported"
+	[ $outFile ] && echo "os-support: supported" >> $outFile
+	osResult="1"
 fi
 [ $outFile ] && echo "os-result: $osResult" >> $outFile
 exit 0

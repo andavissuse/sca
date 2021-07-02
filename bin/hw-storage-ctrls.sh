@@ -63,6 +63,6 @@ for storageLine in `grep -n "^  Hardware Class: storage$" $hwFile | cut -d":" -f
 		fi
         done
 done
-cat $tmpDir/storage-ctrl-pciids.tmp | sort -u
+[ -f "$tmpDir/storage-ctrl-pciids.tmp" ] && cat $tmpDir/storage-ctrl-pciids.tmp | sort -u
 rm -rf $tmpDir
 exit 0 
