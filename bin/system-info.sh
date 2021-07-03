@@ -109,7 +109,7 @@ osArch=`echo $os | cut -d'_' -f1,2 --complement`
 [ $DEBUG ] && echo "*** DEBUG: $0: osId: $osId, osVerId: $osVerId, osArch: $osArch"
 if ! ls $datasetsPath/system-model-"$osId"_*_"$osArch".dat >/dev/null 2>&1; then
         echo "        No certification data for "$osId" "$osArch""
-        [ $outFile ] && echo "system-certs: error" >> $outFile
+        [ $outFile ] && echo "system-certs: no-info" >> $outFile
         [ $outFile ] && echo "system-result: 0" >> $outFile
         exit 1
 fi

@@ -100,15 +100,15 @@ for dataType in $SCA_SRS_BUGS_DATATYPES; do
 	fi
 done
 if [ -z "$dataTypes" ]; then
-	echo "        No error/warning messages"
+	echo "        No warning/error messages to compare against $srsBugsTypeStr"
 	[ $outFile ] && echo "$srsBugsType: none" >> $outFile
 	[ $outFile ] && echo "$srsBugsType-result: 1" >> $outFile
 	exit 0
 fi
 for dataType in $dataTypes; do
 	if [ ! -s "$datasetsPath"/"$dataType"-"$os".dat ]; then
-		echo "        Error retrieving $srsBugsTypeStr (no "$datasetsPath"/"$dataType"-"$os".dat dataset)"
-		[ $outFile ] && echo "$srsBugsType: error" >> $outFile
+		echo "        Missing one or more datasets for $os"
+		[ $outFile ] && echo "$srsBugsType: no-info" >> $outFile
 		[ $outFile ] && echo "$srsBugsType-result: 0" >> $outFile
 		exit 1
 	fi

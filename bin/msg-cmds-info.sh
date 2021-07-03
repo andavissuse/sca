@@ -128,8 +128,14 @@ for cmd in $cmds; do
        		flavor=`echo $kern | sed "s/$kVer-//"`
 		cmdPkgNames="kernel-$flavor"
 	else
-		sleCmdPkgNames=`grep "/$cmd " $susedataPath/rpmfiles-$os.txt | cut -d" " -f2 | sort -u | tr '\n' ' '`
+		sleCmdPkgNames=`grep "/$cmd " $susedataPath/rpmfiles-$os.txt 2>/dev/null | cut -d" " -f2 | sort -u | tr '\n' ' '`
 		[ $DEBUG ] && echo "*** DEBUG: $0: sleCmdPkgNames: $sleCmdPkgNames"
+		if ! ls $susedataPath/rpmfiles-"$os".txt >/dev/null 2>&1; then 
+			echo "            No package info for $cmd"
+			[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: no-info" >> $outFile
+			errorState="TRUE"
+			continue
+		fi
 		scCmdPkgNames=""
 		for sleCmdPkgName in $sleCmdPkgNames; do
 			if scCmdPkgName=`grep "^$sleCmdPkgName " $featuresPath/rpm.txt | cut -d" " -f1`; then
@@ -154,8 +160,8 @@ for cmd in $cmds; do
 	fi
 	[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgNames: $cmdPkgNames"
 	if [ -z "$cmdPkgNames" ]; then
-		echo "            Error retrieving package info for $cmd"
-		[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: error" >> $outFile
+		echo "            No package info for $cmd"
+		[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: no-info" >> $outFile
 		errorState="TRUE"
 	else
 		cmdPkgs=""
@@ -176,7 +182,13 @@ for cmd in $cmds; do
 			cmdPkgName=`echo $cmdPkg | rev | cut -d"-" -f1,2 --complement | rev`
 			cmdPkgVer=`echo $cmdPkg | rev | cut -d"-" -f1,2 | rev`
 			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgName: $cmdPkgName, cmdPkgVer: $cmdPkgVer"
-			cmdPkgCur=`grep "^$cmdPkgName-[0-9]" $susedataPath/rpms-$os.txt | tail -1 | sed "s/\.rpm$//" | sed "s/\.noarch$//" | sed "s/\.${arch}$//"`
+			cmdPkgCur=`grep "^$cmdPkgName-[0-9]" $susedataPath/rpms-$os.txt 2>/dev/null | tail -1 | sed "s/\.rpm$//" | sed "s/\.noarch$//" | sed "s/\.${arch}$//"`
+			if ! ls $susedataPath/rpms-"$os".txt >/dev/null 2>&1; then
+				echo "                No current rpm version info for $cmdPkgName"
+				[ $outFile ] && echo "$msgType-cmds-pkg-status-$cmdPkg: no-info" >> $outFile
+				errorState="TRUE"
+				continue
+			fi
 			cmdPkgCurVer=`echo $cmdPkgCur | sed "s/${cmdPkgName}-//"`
 			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgCur: $cmdPkgCur, cmdPkgCurVer: $cmdPkgCurVer"
 			if [ -z "$cmdPkgCurVer" ]; then
