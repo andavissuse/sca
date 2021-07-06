@@ -1206,6 +1206,7 @@ crmsh-4.2.0+git.1607075079.a25648d8-3.51.1.noarch.rpm
 crmsh-4.2.0+git.1609987436.0d3a9bf5-3.54.1.noarch.rpm
 crmsh-4.3.0+20210219.5d1bf034-3.57.3.noarch.rpm
 crmsh-4.3.0+20210507.bf02d791-3.62.1.noarch.rpm
+crmsh-4.3.1+20210624.67223df2-3.69.1.noarch.rpm
 crmsh-scripts-4.0.0+git.1553262403.5da14df5-1.10.noarch.rpm
 crmsh-scripts-4.0.0+git.1553262403.5da14df5-3.3.1.noarch.rpm
 crmsh-scripts-4.1.0+git.1569593061.35f57072-3.6.1.noarch.rpm
@@ -1225,6 +1226,7 @@ crmsh-scripts-4.2.0+git.1607075079.a25648d8-3.51.1.noarch.rpm
 crmsh-scripts-4.2.0+git.1609987436.0d3a9bf5-3.54.1.noarch.rpm
 crmsh-scripts-4.3.0+20210219.5d1bf034-3.57.3.noarch.rpm
 crmsh-scripts-4.3.0+20210507.bf02d791-3.62.1.noarch.rpm
+crmsh-scripts-4.3.1+20210624.67223df2-3.69.1.noarch.rpm
 cronie-1.5.1-4.45.aarch64.rpm
 cronie-1.5.1-6.7.1.aarch64.rpm
 cronie-1.5.1-6.12.2.aarch64.rpm
@@ -13061,6 +13063,7 @@ rmt-server-pubcloud-2.5.6-3.12.1.aarch64.rpm
 rmt-server-pubcloud-2.5.7-3.15.1.aarch64.rpm
 rmt-server-pubcloud-2.6.5-3.18.1.aarch64.rpm
 rmt-server-pubcloud-2.6.8-3.23.1.aarch64.rpm
+rmt-server-pubcloud-2.6.10-3.28.1.aarch64.rpm
 rollback-helper-1.0+git20181218.5394d6e-4.3.1.noarch.rpm
 rpcbind-0.2.3-5.3.1.aarch64.rpm
 rpcbind-0.2.3-5.6.1.aarch64.rpm

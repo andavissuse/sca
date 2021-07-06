@@ -1,0 +1,7 @@
+000_md5sum ansible-sysctl do_mandb hcnmgr isats kernel ntpd servicereport.daemon servicereport.kdump servicereport.package sshd stress-ng systemd systemd-helper
+9ac3900bdfad10b33d391a5915659a73 1 0 0 1 1 1 0 0 0 1 0 1 0
+2ab25fa3a4b74a66d964a7dffc0cce68 0 1 0 0 1 0 0 0 0 0 1 0 1
+d8c3c35dd4df62e4ef84aa74cab0930e 0 0 0 0 1 0 0 0 0 0 0 1 0
+f5e68e11bbf335423bd6256bcef47f44 0 0 0 0 1 0 0 0 0 0 0 1 0
+d9d82878f1ba73783eb8c6c3ff8d33c3 0 0 1 0 1 0 1 1 1 0 0 1 0
+28e9aa4337b79e21a68109abea4436b5 0 0 1 0 1 0 0 0 0 0 0 1 0
