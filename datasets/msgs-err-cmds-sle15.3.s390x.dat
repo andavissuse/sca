@@ -1,0 +1,6 @@
+000_md5sum dbus-daemon dbus-run-session do_mandb dockerd firefox.desktop fwupd gdm-launch-environment gdm-password gnome-session gnome-session-binary gnome-session-c gnome-shell gnome-software gsd-a11y-settin gsd-color gsd-datetime gsd-housekeepin gsd-keyboard gsd-media-keys gsd-power gsd-print-notif gsd-rfkill gsd-screensaver gsd-sharing gsd-smartcard gsd-sound gsd-wwan gsd-xsettings kernel login pulseaudio salt-secrets-config.py sshd wickedd-nanny y2controlcenter
+470e68e19b53a83d708420ee09e2cf29 0 1 0 0 0 1 1 1 1 1 1 1 1 1 0 1 1 0 1 0 1 1 1 1 1 1 1 1 0 0 1 0 0 0 0
+edcfdce2539fb2c738970e9169e66439 0 0 0 1 1 1 0 1 1 1 0 1 1 0 1 0 0 1 1 1 0 0 0 1 0 0 0 0 0 1 0 0 1 1 1
+c7c397753636a581255636bfc6d45a53 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0
+7bbefc25ca7f89c40dcacbc153fdc14e 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+c8bf4d93f8921a05aa6645ec92d2ab63 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
