@@ -1188,6 +1188,7 @@ clamav-0.100.3-3.9.1.x86_64.rpm
 clamav-0.100.3-3.14.1.x86_64.rpm
 clamav-0.100.3-3.17.2.x86_64.rpm
 clamav-0.103.2-3.26.1.x86_64.rpm
+clamav-0.103.2-3.29.1.x86_64.rpm
 clamav-devel-0.100.0-1.17.x86_64.rpm
 clamav-devel-0.100.1-3.3.1.x86_64.rpm
 clamav-devel-0.100.2-3.6.4.x86_64.rpm
@@ -1195,6 +1196,7 @@ clamav-devel-0.100.3-3.9.1.x86_64.rpm
 clamav-devel-0.100.3-3.14.1.x86_64.rpm
 clamav-devel-0.100.3-3.17.2.x86_64.rpm
 clamav-devel-0.103.2-3.26.1.x86_64.rpm
+clamav-devel-0.103.2-3.29.1.x86_64.rpm
 clamsap-0.99.25-2.37.x86_64.rpm
 clamsap-0.101.9-4.3.1.x86_64.rpm
 clang5-5.0.1-6.5.x86_64.rpm
@@ -5918,6 +5920,7 @@ libclamav7-0.100.3-3.9.1.x86_64.rpm
 libclamav7-0.100.3-3.14.1.x86_64.rpm
 libclamav7-0.100.3-3.17.2.x86_64.rpm
 libclamav9-0.103.2-3.26.1.x86_64.rpm
+libclamav9-0.103.2-3.29.1.x86_64.rpm
 libclammspack0-0.100.0-1.17.x86_64.rpm
 libclammspack0-0.100.1-3.3.1.x86_64.rpm
 libclammspack0-0.100.2-3.6.4.x86_64.rpm
@@ -6568,6 +6571,7 @@ libfreetype6-2.10.1-4.8.1.x86_64.rpm
 libfreetype6-32bit-2.9-2.13.x86_64.rpm
 libfreetype6-32bit-2.10.1-4.8.1.x86_64.rpm
 libfreshclam2-0.103.2-3.26.1.x86_64.rpm
+libfreshclam2-0.103.2-3.29.1.x86_64.rpm
 libfribidi0-0.19.6-1.28.x86_64.rpm
 libfstrm0-0.3.2-1.16.x86_64.rpm
 libfuse2-2.9.7-1.49.x86_64.rpm
@@ -6810,8 +6814,11 @@ libgnomecanvas-2-0-2.30.3-1.42.x86_64.rpm
 libgnomecanvas-devel-2.30.3-1.42.x86_64.rpm
 libgnomecanvas-lang-2.30.3-1.42.noarch.rpm
 libgnomekbd-3.26.0-1.49.x86_64.rpm
+libgnomekbd-3.26.0-3.3.1.x86_64.rpm
 libgnomekbd-devel-3.26.0-1.49.x86_64.rpm
+libgnomekbd-devel-3.26.0-3.3.1.x86_64.rpm
 libgnomekbd-lang-3.26.0-1.49.noarch.rpm
+libgnomekbd-lang-3.26.0-3.3.1.noarch.rpm
 libgnomesu0-2.0.2-1.137.x86_64.rpm
 libgnomesu-2.0.2-1.137.x86_64.rpm
 libgnomesu-devel-2.0.2-1.137.x86_64.rpm
@@ -7569,6 +7576,7 @@ libmariadb3-3.1.5-3.12.1.x86_64.rpm
 libmariadb3-3.1.8-3.18.1.x86_64.rpm
 libmariadb3-3.1.11-3.22.2.x86_64.rpm
 libmariadb3-3.1.12-3.25.1.x86_64.rpm
+libmariadb3-3.1.13-3.30.1.x86_64.rpm
 libmariadbprivate-3.0.3-1.14.x86_64.rpm
 libmariadbprivate-3.0.7-3.3.1.x86_64.rpm
 libmariadbprivate-3.0.7-3.6.2.x86_64.rpm
@@ -7577,6 +7585,7 @@ libmariadbprivate-3.1.5-3.12.1.x86_64.rpm
 libmariadbprivate-3.1.8-3.18.1.x86_64.rpm
 libmariadbprivate-3.1.11-3.22.2.x86_64.rpm
 libmariadbprivate-3.1.12-3.25.1.x86_64.rpm
+libmariadbprivate-3.1.13-3.30.1.x86_64.rpm
 libmariadb-devel-3.0.3-1.14.x86_64.rpm
 libmariadb-devel-3.0.7-3.3.1.x86_64.rpm
 libmariadb-devel-3.0.7-3.6.2.x86_64.rpm
@@ -7585,6 +7594,7 @@ libmariadb-devel-3.1.5-3.12.1.x86_64.rpm
 libmariadb-devel-3.1.8-3.18.1.x86_64.rpm
 libmariadb-devel-3.1.11-3.22.2.x86_64.rpm
 libmariadb-devel-3.1.12-3.25.1.x86_64.rpm
+libmariadb-devel-3.1.13-3.30.1.x86_64.rpm
 libmariadb_plugins-3.0.3-1.14.x86_64.rpm
 libmariadb_plugins-3.0.7-3.3.1.x86_64.rpm
 libmariadb_plugins-3.0.7-3.6.2.x86_64.rpm
@@ -7593,6 +7603,7 @@ libmariadb_plugins-3.1.5-3.12.1.x86_64.rpm
 libmariadb_plugins-3.1.8-3.18.1.x86_64.rpm
 libmariadb_plugins-3.1.11-3.22.2.x86_64.rpm
 libmariadb_plugins-3.1.12-3.25.1.x86_64.rpm
+libmariadb_plugins-3.1.13-3.30.1.x86_64.rpm
 libmarisa0-0.2.4-1.75.x86_64.rpm
 libmaxminddb0-1.4.2-1.3.1.x86_64.rpm
 libmaxminddb0-1.4.3-1.6.1.x86_64.rpm

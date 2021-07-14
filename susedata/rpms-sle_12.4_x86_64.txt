@@ -9418,6 +9418,7 @@ mgetty-1.1.36-58.9.2.x86_64.rpm
 mgopen-fonts-0.20050518-203.171.noarch.rpm
 migrate-sles-to-sles4sap-12.4.0-2.4.noarch.rpm
 migrate-sles-to-sles4sap-12.4.2-4.3.1.noarch.rpm
+migrate-sles-to-sles4sap-12.4.2-4.6.1.noarch.rpm
 mingetty-1.0.8s-19.63.x86_64.rpm
 minicom-2.7-3.1.x86_64.rpm
 mipv6d-2.0.2.umip.0.4-19.77.x86_64.rpm

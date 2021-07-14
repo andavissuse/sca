@@ -1,4 +1,5 @@
-000_md5sum SAPBPP SAPP liblogging-stdlog
-b11aab6344815cde37dc2eeccfe99a98 0 0 1
-340fa0c99c8acec05952337def820164 0 1 0
-cd6dd1a1f8556e3d9c07e3da75a86606 1 0 0
+000_md5sum SAPBPP SAPP liblogging-stdlog sudo
+b11aab6344815cde37dc2eeccfe99a98 0 0 1 0
+340fa0c99c8acec05952337def820164 0 1 0 0
+cd6dd1a1f8556e3d9c07e3da75a86606 1 0 0 0
+c8c171e43db0ef8805650b64221e0c63 0 0 0 1
