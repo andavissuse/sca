@@ -169,6 +169,14 @@ if [ "$numHighIds" -eq "0" ]; then
 else
 	echo "        Found $numHighIds $srsBugsTypeStr with $cutoffStr or greater match"
 	highIds=`echo $ids | cut -d" " -f1-${numHighIds}`
+	hashFile="$datasetsPath/${srsBugsType}-hash.dat"
+	if [ -f "$hashFile" ]; then
+		for highId in $highIds; do
+			realId=`grep $highId $hashFile | cut -d" " -f2`
+			realIds="$realIds $realId"
+		done
+		highIds=`echo $realIds | sed "s/^ //"`
+	fi
 	[ $DEBUG ] && echo "*** DEBUG: $0: highIds: $highIds"
 	[ $outFile ] && echo "$srsBugsType: $highIds" >> $outFile
 	for index in $(seq 1 $numHighIds); do

@@ -35,6 +35,9 @@ if [ ! "$1" ]; then
 fi
 os="$1"
 
+if echo "$os" | grep -q -E "^sle_hpc|^sle_sap"; then
+	os=`echo $os | sed "s/^sle_[a-z]*/sle/"`
+fi
 osId=`echo $os | cut -d'_' -f1`
 osVerId=`echo $os | cut -d'_' -f2`
 if ! echo $osVerId | grep -q '\.'; then

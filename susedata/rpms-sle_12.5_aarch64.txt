@@ -801,6 +801,7 @@ ckermit-9.0.302-9.52.aarch64.rpm
 clamav-0.101.3-1.19.aarch64.rpm
 clamav-0.103.0-3.3.1.aarch64.rpm
 clamav-0.103.2-3.6.1.aarch64.rpm
+clamav-0.103.2-3.9.1.aarch64.rpm
 classpathx-mail-1.1.1-102.179.noarch.rpm
 clicfs-1.4.6-1.15.aarch64.rpm
 clone-master-clean-up-1.4-4.3.1.noarch.rpm
@@ -2506,6 +2507,7 @@ lftp-4.7.4-3.6.1.aarch64.rpm
 lftp-4.7.4-3.11.1.aarch64.rpm
 lhasa-devel-0.2.0-5.1.aarch64.rpm
 lib3ds-1-3-1.3.0-25.3.aarch64.rpm
+libBox2D-devel-2.3.1-4.3.8.aarch64.rpm
 libEMF1-1.0.7-9.30.aarch64.rpm
 libEMF1-1.0.7-11.3.1.aarch64.rpm
 libEMF-devel-1.0.7-9.30.aarch64.rpm
@@ -3336,6 +3338,7 @@ libdcerpc0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libdcerpc0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libdcerpc0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libdcerpc0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libdcerpc0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libdcerpc-binding0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libdcerpc-binding0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libdcerpc-binding0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -3345,6 +3348,7 @@ libdcerpc-binding0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libdcerpc-binding0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libdcerpc-binding0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libdcerpc-binding0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libdcerpc-binding0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libdconf1-0.26.0-11.6.aarch64.rpm
 libdhash1-0.5.0-32.19.aarch64.rpm
 libdhash-devel-0.5.0-32.19.aarch64.rpm
@@ -3982,6 +3986,7 @@ libiw30-30.pre9-34.15.aarch64.rpm
 libiw-devel-30.pre9-34.15.aarch64.rpm
 libixion-devel-0.14.1-13.9.2.aarch64.rpm
 libixion-devel-0.15.0-13.12.1.aarch64.rpm
+libixion-devel-0.16.1-13.15.1.aarch64.rpm
 libjack0-1.9.9.5-8.2.aarch64.rpm
 libjack-devel-1.9.9.5-8.2.aarch64.rpm
 libjansson4-2.12-3.5.1.aarch64.rpm
@@ -4209,8 +4214,10 @@ libmutter0-3.20.3-16.15.1.aarch64.rpm
 libmutter0-3.20.3-16.18.1.aarch64.rpm
 libmwaw-devel-0.3.14-7.12.1.aarch64.rpm
 libmwaw-devel-0.3.15-7.15.1.aarch64.rpm
+libmwaw-devel-0.3.17-7.18.1.aarch64.rpm
 libmwaw-devel-doc-0.3.14-7.12.1.noarch.rpm
 libmwaw-devel-doc-0.3.15-7.15.1.noarch.rpm
+libmwaw-devel-doc-0.3.17-7.18.1.noarch.rpm
 libmysqlclient18-10.0.40.1-2.9.1.aarch64.rpm
 libmysqlclient18-10.0.40.2-2.12.2.aarch64.rpm
 libmysqlclient18-10.0.40.3-2.15.1.aarch64.rpm
@@ -4254,6 +4261,7 @@ libndr0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4263,6 +4271,7 @@ libndr-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-krb5pac0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-krb5pac0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-krb5pac0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4272,6 +4281,7 @@ libndr-krb5pac0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-krb5pac0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-krb5pac0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-krb5pac0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-krb5pac0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4281,6 +4291,7 @@ libndr-krb5pac-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-krb5pac-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-krb5pac-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-nbt0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-nbt0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-nbt0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4290,6 +4301,7 @@ libndr-nbt0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-nbt0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-nbt0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-nbt0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-nbt0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-nbt-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-nbt-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-nbt-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4299,6 +4311,7 @@ libndr-nbt-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-nbt-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-nbt-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-nbt-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-nbt-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-standard0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-standard0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-standard0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4308,6 +4321,7 @@ libndr-standard0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-standard0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-standard0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-standard0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-standard0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libndr-standard-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libndr-standard-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libndr-standard-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4317,6 +4331,7 @@ libndr-standard-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libndr-standard-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libndr-standard-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libndr-standard-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libndr-standard-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libneon27-0.30.0-3.64.aarch64.rpm
 libneon-devel-0.30.0-3.64.aarch64.rpm
 libnet9-1.2~rc3-3.1.aarch64.rpm
@@ -4329,6 +4344,7 @@ libnetapi0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libnetapi0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libnetapi0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libnetapi0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libnetapi0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libnetcontrol0-0.3.1-5.2.aarch64.rpm
 libnetcontrol0-0.3.1-7.3.1.aarch64.rpm
 libnetcontrol-devel-0.3.1-5.2.aarch64.rpm
@@ -4386,8 +4402,11 @@ libntfs-3g-devel-2013.1.13-5.6.1.aarch64.rpm
 libnuma1-2.0.12-1.23.aarch64.rpm
 libnuma-devel-2.0.12-1.23.aarch64.rpm
 libnumbertext-1_0-0-1.0.5-1.3.1.aarch64.rpm
+libnumbertext-1_0-0-1.0.6-1.6.1.aarch64.rpm
 libnumbertext-data-1.0.5-1.3.1.aarch64.rpm
+libnumbertext-data-1.0.6-1.6.1.aarch64.rpm
 libnumbertext-tools-1.0.5-1.3.1.aarch64.rpm
+libnumbertext-tools-1.0.6-1.6.1.aarch64.rpm
 liboauth0-0.9.4-14.59.aarch64.rpm
 liboauth-devel-0.9.4-14.59.aarch64.rpm
 libobjc4-4.8.5-31.20.1.aarch64.rpm
@@ -4471,6 +4490,7 @@ libopus-devel-1.1-3.1.aarch64.rpm
 libopus-devel-static-1.1-3.1.aarch64.rpm
 liborcus-devel-0.14.1-10.12.2.aarch64.rpm
 liborcus-devel-0.15.3-10.15.1.aarch64.rpm
+liborcus-devel-0.16.1-10.18.1.aarch64.rpm
 liborc-0_4-0-0.4.21-1.3.aarch64.rpm
 libosinfo-1.2.0-1.19.aarch64.rpm
 libosinfo-1_0-0-1.2.0-1.19.aarch64.rpm
@@ -4885,6 +4905,7 @@ libsamba-credentials0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-credentials0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-credentials0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-credentials0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-credentials0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamba-errors0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamba-errors0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamba-errors0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4894,6 +4915,7 @@ libsamba-errors0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-errors0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-errors0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-errors0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-errors0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamba-hostconfig0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamba-hostconfig0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamba-hostconfig0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4903,6 +4925,7 @@ libsamba-hostconfig0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-hostconfig0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-hostconfig0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-hostconfig0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-hostconfig0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamba-passdb0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamba-passdb0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamba-passdb0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4912,6 +4935,7 @@ libsamba-passdb0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-passdb0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-passdb0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-passdb0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-passdb0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamba-util0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamba-util0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamba-util0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4921,6 +4945,7 @@ libsamba-util0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-util0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-util0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-util0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-util0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamba-util-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamba-util-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamba-util-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4930,6 +4955,7 @@ libsamba-util-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamba-util-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamba-util-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamba-util-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamba-util-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsamdb0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsamdb0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsamdb0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -4939,6 +4965,7 @@ libsamdb0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsamdb0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsamdb0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsamdb0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsamdb0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsaml8-2.5.5-3.3.1.aarch64.rpm
 libsaml-devel-2.5.5-3.3.1.aarch64.rpm
 libsamplerate0-0.1.8-11.111.aarch64.rpm
@@ -5009,6 +5036,7 @@ libsmbclient0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsmbclient0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsmbclient0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsmbclient0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsmbclient0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsmbclient-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsmbclient-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsmbclient-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -5018,6 +5046,7 @@ libsmbclient-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsmbclient-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsmbclient-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsmbclient-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsmbclient-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsmbconf0-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsmbconf0-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsmbconf0-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -5027,6 +5056,7 @@ libsmbconf0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsmbconf0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsmbconf0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsmbconf0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsmbconf0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsmbldap2-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libsmbldap2-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libsmbldap2-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -5036,6 +5066,7 @@ libsmbldap2-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libsmbldap2-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libsmbldap2-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libsmbldap2-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libsmbldap2-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libsmi2-0.4.8-18.55.aarch64.rpm
 libsmi-0.4.8-18.55.aarch64.rpm
 libsmi-devel-0.4.8-18.55.aarch64.rpm
@@ -5243,6 +5274,7 @@ libtevent-util0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libtevent-util0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libtevent-util0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libtevent-util0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libtevent-util0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libthai0-0.1.25-4.2.aarch64.rpm
 libthai-data-0.1.25-4.2.aarch64.rpm
 libtheora0-1.1.1-26.71.aarch64.rpm
@@ -5642,6 +5674,7 @@ libwbclient0-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libwbclient0-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libwbclient0-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libwbclient0-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libwbclient0-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libwbclient-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 libwbclient-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 libwbclient-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -5651,6 +5684,7 @@ libwbclient-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 libwbclient-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 libwbclient-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 libwbclient-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+libwbclient-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 libwbxml2-0-0.10.9-14.77.aarch64.rpm
 libwbxml2-devel-0.10.9-14.77.aarch64.rpm
 libwebkit2gtk3-lang-2.24.4-2.47.1.noarch.rpm
@@ -5702,6 +5736,7 @@ libwpg-0_3-3-0.3.0-1.3.aarch64.rpm
 libwpg-devel-0.3.0-1.3.aarch64.rpm
 libwpg-devel-doc-0.3.0-1.3.noarch.rpm
 libwps-devel-0.4.10-10.13.2.aarch64.rpm
+libwps-devel-0.4.11-10.16.1.aarch64.rpm
 libwrap0-7.6-886.3.aarch64.rpm
 libwscodecs1-2.4.16-48.51.1.aarch64.rpm
 libwsman1-2.4.11-21.8.1.aarch64.rpm
@@ -7309,6 +7344,7 @@ perl-zypp-0.7.3-3.10.aarch64.rpm
 permissions-20170707-3.6.1.aarch64.rpm
 permissions-20170707-3.14.1.aarch64.rpm
 permissions-20170707-3.21.1.aarch64.rpm
+permissions-20170707-6.4.1.aarch64.rpm
 pesign-0.109-6.3.1.aarch64.rpm
 pesign-obs-integration-10.0-9.23.aarch64.rpm
 phonon-backend-gstreamer-4.7.2~git20140418-3.4.aarch64.rpm
@@ -8359,6 +8395,7 @@ samba-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 samba-client-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 samba-client-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 samba-client-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -8368,6 +8405,7 @@ samba-client-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-client-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-client-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-client-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-client-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 samba-core-devel-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 samba-core-devel-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 samba-core-devel-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -8377,6 +8415,7 @@ samba-core-devel-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-core-devel-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-core-devel-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-core-devel-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-core-devel-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 samba-doc-4.10.5+git.129.35f7bb6e177-1.1.noarch.rpm
 samba-doc-4.10.5+git.134.674d33703a6-3.3.1.noarch.rpm
 samba-doc-4.10.5+git.165.126b152c238-3.6.2.noarch.rpm
@@ -8386,6 +8425,7 @@ samba-doc-4.10.18+git.208.88201368c52-3.17.1.noarch.rpm
 samba-doc-4.10.18+git.219.1d732314d96-3.20.1.noarch.rpm
 samba-doc-4.10.18+git.239.e930ae188c1-3.24.1.noarch.rpm
 samba-doc-4.10.18+git.269.dd608524c88-3.27.1.noarch.rpm
+samba-doc-4.10.18+git.276.7a258e1a7fc-3.30.1.noarch.rpm
 samba-libs-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 samba-libs-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 samba-libs-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -8395,6 +8435,7 @@ samba-libs-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-libs-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-libs-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-libs-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-libs-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 samba-libs-python3-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 samba-libs-python3-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 samba-libs-python3-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -8404,6 +8445,7 @@ samba-libs-python3-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-libs-python3-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-libs-python3-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-libs-python3-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-libs-python3-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 samba-winbind-4.10.5+git.129.35f7bb6e177-1.1.aarch64.rpm
 samba-winbind-4.10.5+git.134.674d33703a6-3.3.1.aarch64.rpm
 samba-winbind-4.10.5+git.165.126b152c238-3.6.2.aarch64.rpm
@@ -8413,6 +8455,7 @@ samba-winbind-4.10.18+git.208.88201368c52-3.17.1.aarch64.rpm
 samba-winbind-4.10.18+git.219.1d732314d96-3.20.1.aarch64.rpm
 samba-winbind-4.10.18+git.239.e930ae188c1-3.24.1.aarch64.rpm
 samba-winbind-4.10.18+git.269.dd608524c88-3.27.1.aarch64.rpm
+samba-winbind-4.10.18+git.276.7a258e1a7fc-3.30.1.aarch64.rpm
 sane-backends-1.0.24-3.1.aarch64.rpm
 sane-backends-1.0.31-4.3.1.aarch64.rpm
 sane-backends-devel-1.0.24-3.1.aarch64.rpm
@@ -10186,6 +10229,7 @@ yast2-firstboot-3.1.23-1.30.noarch.rpm
 yast2-firstboot-3.1.24-3.3.1.noarch.rpm
 yast2-firstboot-3.1.25-3.6.1.noarch.rpm
 yast2-ftp-server-3.4.1-5.38.noarch.rpm
+yast2-ftp-server-3.4.2-3.5.1.noarch.rpm
 yast2-hardware-detection-3.1.8-1.39.aarch64.rpm
 yast2-http-server-3.2.3-1.31.noarch.rpm
 yast2-inetd-3.1.13-4.6.noarch.rpm

@@ -40,7 +40,7 @@ fi
 
 basicEnvFile="$scDir/basic-environment.txt"
 if [ ! -f $basicEnvFile ]; then
-	[ $DEBUG ] && echo "*** DEBUG: $0: $modFile does not exist, exiting..." >&2
+	[ $DEBUG ] && echo "*** DEBUG: $0: $basicEnvFile does not exist, exiting..." >&2
 	exit 1	
 fi
 osId=`grep -m 1 "^ID=" "$basicEnvFile" | cut -d'=' -f2 | sed 's/\"//g'`

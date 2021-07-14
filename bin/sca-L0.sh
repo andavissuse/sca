@@ -7,12 +7,12 @@
 # susedata is ../susedata, but these may be overridden with
 # optional arguments.
 #
+# Inputs: (optional with -c) parameters-to-check (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs)
 # Inputs: (optional with -p) path to datasets
 #	  (optional with -s) path to susedata
 #	  (optional w/ -t) tmp path (for uncompressing supportconfig)
 #         (optional with -o) output file for terse report (in addition to stdout)
 #	  supportconfig tarball 
-#	  parameters-to-check (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs)
 #
 # Output: Various info about supportconfig
 #
@@ -30,7 +30,7 @@ function usage() {
 	echo "                 [-t tmp-path]"
 	echo "                 [-o outfile (short-form output)]"
 	echo "                 supportconfig-tarfile"
-	echo "                 Example: sca-L0.sh -f os,srs -o /tmp/sca-L0.out /var/log/supportconfig.tgz"
+	echo "                 Example: sca-L0.sh -c os,srs -o /tmp/sca-L0.out /var/log/supportconfig.tgz"
 }
 
 function exitError() {

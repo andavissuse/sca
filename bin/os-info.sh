@@ -116,7 +116,7 @@ endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
 [ $DEBUG ] && echo "*** DEBUG: $0: endLtss: $endLtss, endGeneral: $endGeneral" >&2
 if [ -z "$endLtss" ] || [ -z "$endGeneral" ]; then
         echo "        No lifecycle data for $osName $osVer $osArch"
-        [ $outFile ] && echo "os-support: error" >> $outFile
+        [ $outFile ] && echo "os-support: no-info" >> $outFile
         [ $outFile ] && echo "os-result: 0" >> $outFile
         exit 1
 fi
