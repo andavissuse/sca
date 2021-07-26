@@ -26,8 +26,8 @@ Group:		Tools
 URL:		https://github.com/andavissuse/sca-L0
 # Ignore next line; source service will create source archive
 Source:		https://github.com/andavissuse/sca-L0-%{version}.tar.xz
-Requires:	sca-datasets = %{version}
-Requires:	sca-susedata = %{version}
+Requires:	sca-datasets
+Requires:	sca-susedata
 Requires:	python3-numpy python3-pandas python3-scikit-learn
 Requires:	tar
 Requires:	util-linux
@@ -35,23 +35,10 @@ Requires:	bc
 Obsoletes:	sca-datasets-suse
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
-%package -n sca-datasets
-Summary:        Datasets for Supportconfig Analyzer
-
-%package -n sca-susedata
-Summary:        SUSE Product Data for Supportconfig Analyzer
-
-%description -n sca-datasets
-sca-datasets contains existing SUSE supportconfig data provided via vectorized datasets.
-
-%description -n sca-susedata
-sca-susedata contains support-relevant data (lifecycles, rpm versions, etc.) for SUSE products.
-
 %description
 sca-L0 contains Level 0 utilities for analyzing supportconfigs.
 
 %prep
-# Unpack scripts, datasets, and susedata
 %setup -n sca-L0-%version
 
 %build
@@ -59,7 +46,6 @@ sed -i "s/^SCA_HOME=.*/SCA_HOME=\"\/opt\/suse\/sca\"/" ./sca-L0.conf
 sed -i "s/^VERSION=.*/VERSION=\"%{version}\"/" ./bin/sca-L0.sh
 
 %install
-# sca-L0
 mkdir -p %{buildroot}/etc
 mkdir -p %{buildroot}/opt/suse/sca/bin
 install -c -m 644 ./sca-L0.conf %{buildroot}/etc/
@@ -67,12 +53,6 @@ install -c -m 644 ./README.md %{buildroot}/opt/suse/sca/README.sca-L0
 install -c -m 755 ./bin/*.sh %{buildroot}/opt/suse/sca/bin/
 install -c -m 644 ./bin/*.py %{buildroot}/opt/suse/sca/bin/
 ln -s /opt/suse/sca/bin/sca-L0.sh %{buildroot}/opt/suse/sca/bin/sca-L0
-# sca-datasets
-mkdir -p %{buildroot}/opt/suse/sca/datasets
-install -c -m 644 ./datasets/* %{buildroot}/opt/suse/sca/datasets/
-# sca-susedata
-mkdir -p %{buildroot}/opt/suse/sca/susedata
-install -c -m 644 ./susedata/* %{buildroot}/opt/suse/sca/susedata/
 
 %files
 %defattr(-,root,root)
@@ -81,17 +61,5 @@ install -c -m 644 ./susedata/* %{buildroot}/opt/suse/sca/susedata/
 /opt/suse/sca/README.sca-L0
 /opt/suse/sca/bin
 %config /etc/sca-L0.conf
-
-%files -n sca-datasets
-%defattr(-,root,root)
-%dir /opt/suse
-%dir /opt/suse/sca
-/opt/suse/sca/datasets
-
-%files -n sca-susedata
-%defattr(-,root,root)
-%dir /opt/suse
-%dir /opt/suse/sca
-/opt/suse/sca/susedata
 
 %changelog
