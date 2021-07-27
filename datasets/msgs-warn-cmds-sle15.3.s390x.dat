@@ -1,8 +1,0 @@
-000_md5sum SuSEfirewall apparmor.systemd dockerd firewalld gnome-session gnome-session-binary gnome-shell kernel oracle org.gnome.Shell.desktop systemd
-470e68e19b53a83d708420ee09e2cf29 0 0 0 0 1 1 1 1 0 1 1
-edcfdce2539fb2c738970e9169e66439 0 0 1 1 1 1 1 1 0 1 1
-c7c397753636a581255636bfc6d45a53 0 0 0 0 0 0 0 1 0 0 1
-7bbefc25ca7f89c40dcacbc153fdc14e 0 0 0 0 0 0 0 1 0 0 1
-d01106fcc939ac720f685dbe0af6b4e6 1 0 0 0 0 0 0 1 1 0 1
-97441590ac95de77ddcfc630e43e57a7 0 0 0 0 0 0 0 0 0 0 1
-c8bf4d93f8921a05aa6645ec92d2ab63 0 1 0 0 0 0 0 1 0 0 0
