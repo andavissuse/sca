@@ -134,7 +134,7 @@ if [ -z "$dataTypeArgs" ]; then
 	exit 1
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath, datasetsPath: $datasetsPath, srsBugsType: $srsBugsType"
-idsScores=`python3 $SCA_BIN_PATH/knn_combined.py "$featuresPath" "$datasetsPath"/"$srsBugsType".dat $dataTypeArgs`
+idsScores=`python3 $SCA_BIN_PATH/knn_combined.py "$featuresPath" "$datasetsPath"/"$srsBugsType".dat $dataTypeArgs 2>/dev/null`
 [ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores"
 ids=""
 scores=""

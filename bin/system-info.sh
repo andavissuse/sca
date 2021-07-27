@@ -127,7 +127,7 @@ while (( verMinorToCheck >= verMinorBase )); do
 	osToCheck="${osId}_${osVerMajor}.${verMinorToCheck}_${osArch}"
 	[ $DEBUG ] && echo "*** DEBUG: $0: osToCheck: $osToCheck" >&2
 	certsFromModels="[]"
-	[ -f "$datasetsPath/system-model-$osToCheck.dat" ] && certsFromModels=`python3 $SCA_BIN_PATH/knn.py $featuresPath/system-model.tmp $datasetsPath/certs.dat $datasetsPath/system-model-$osToCheck.dat "jaccard" "true"`
+	[ -f "$datasetsPath/system-model-$osToCheck.dat" ] && certsFromModels=`python3 $SCA_BIN_PATH/knn.py $featuresPath/system-model.tmp $datasetsPath/certs.dat $datasetsPath/system-model-$osToCheck.dat "jaccard" "true" 2>/dev/null`
 	[ $DEBUG ] && echo "*** DEBUG: $0: certsFromModels: $certsFromModels" >&2
 	if [ "$certsFromModels" != "[]" ]; then
 		certsMod=`echo $certsFromModels | sed "s/^\[//" | sed "s/\]$//" | sed "s/,//g" | sed "s/'//g"`
