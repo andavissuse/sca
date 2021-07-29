@@ -9,19 +9,14 @@ Config file containing variables (e.g., paths, datatypes) for use by scripts
 ## bin directory
 bash and python scripts to analyze supportconfigs
 
-## datasets directory
-Link to datasets used for supportconfig analysis.  Datasets are built and provided in the sca-databuild project.
-
-## susedata directory
-Link to susedata info (product lifecycles, rpm versions, rpm files) used for supportconfig analysis.  susedata files are built and provided in the sca-databuild project.
-
 ## packaging directory
-spec file to be used in packagin
+spec file to be used in packaging
 
 # Instructions
 
 ## Analyzing a supportconfig
-Top-level supportconfig analysis script is sca-L0.sh.
+Prerequisites:
+* datasets and susedata files in the directories specified in sca-L0.conf
 
 To analyze a supportconfig:
 * Run `sca-L0.sh <supportconfig-tarball>`.  This will:
