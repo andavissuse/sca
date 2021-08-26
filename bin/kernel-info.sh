@@ -4,8 +4,7 @@
 # This script outputs kernel information (version, support status, etc.)
 #
 # Inputs: 1) path containing features files
-#	  2) susedata path
-#	  3) short-form output file (optional)
+#	  2) short-form output file (optional)
 #
 # Output: Info messages written to stdout
 #	  kernel, kernel-status, kernel-result name-value pairs written to output file
@@ -13,7 +12,7 @@
 
 # functions
 function usage() {
-	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path susedata-path [output-file]"
+	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path [output-file]"
 }
 
 # arguments
@@ -29,19 +28,18 @@ while getopts 'hd' OPTION; do
         esac
 done
 shift $((OPTIND - 1))
-if [ ! "$2" ]; then
+if [ ! "$1" ]; then
         usage
 	exit 1
 else
         featuresPath="$1"
-	susedataPath="$2"
 fi
-if [ "$3" ]; then
-	outFile="$3"
+if [ "$2" ]; then
+	outFile="$2"
 fi
 
-if [ ! -d "$featuresPath" ] || [ ! -d "$susedataPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
-	echo "$0: features path $featuresPath, susedata path $susedataPath, or output file $outFile  does not exist, exiting..."
+if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
+	echo "$0: features path $featuresPath or output file $outFile  does not exist, exiting..."
 	[ $outFile ] && echo "kernel: error" >> $outFile
 	[ $outFile ] && echo "kernel-status: error" >> $outFile
 	[ $outFile ] && echo "kernel-result: error" >> $outFile
@@ -64,10 +62,8 @@ if [ -z "$SCA_HOME" ]; then
 	exit 1
 fi
 
-# intro
+# start
 echo ">>> Checking kernel..."
-
-# kernel
 kern=`cat $featuresPath/kernel.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: kern: $kern" >&2
 if [ -z "$kern" ]; then
@@ -98,16 +94,16 @@ kVer=`echo $kern | sed 's/-[a-z]*$//'`
 flavor=`echo $kern | sed "s/$kVer-//"`
 [ $DEBUG ] && echo "*** DEBUG: $0: kVer: $kVer, flavor: $flavor" >&2
 kPkg="kernel-${flavor}-${kVer}"
-if [ ! -f "$susedataPath/rpms-$os.txt" ]; then
+if [ ! -f "$SCA_SUSEDATA_PATH/rpms-$os.txt" ]; then
 	echo "            No current kernel-${flavor} rpm info for $os"
 	[ $outFile ] && echo "kernel-status: no-info" >> $outFile
 	[ $outFile ] && echo "kernel-result: 0" >> $outFile
 	exit 1
 fi
-kPkgCur=`grep "kernel-$flavor-[0-9]" $susedataPath/rpms-$os.txt | tail -1`
+kPkgCur=`grep "kernel-$flavor-[0-9]" $SCA_SUSEDATA_PATH/rpms-$os.txt | tail -1`
 kVerCur=`echo $kPkgCur | sed "s/^kernel-$flavor-//" | sed 's/\.${arch}\.rpm//'`
 [ $DEBUG ] && echo "*** DEBUG: $0: kPkg: $kPkg, kPkgCur: $kPkgCur, kVerCur: $kVerCur" >&2
-if ! grep $kPkg $susedataPath/rpms-$os.txt >/dev/null; then
+if ! grep $kPkg $SCA_SUSEDATA_PATH/rpms-$os.txt >/dev/null; then
 	echo "        Kernel version is not an official SUSE kernel"
 	[ $outFile ] && echo "kernel-status: non-suse-kernel" >> $outFile
 	[ $outFile ] && echo "kernel-result: -1" >> $outFile

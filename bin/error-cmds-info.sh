@@ -1,21 +1,19 @@
 #!/bin/sh
 
 #
-# This script outputs information about commands that generated errors or warnings.
+# This script outputs information about commands that generated errors.
 #
 # Inputs: 1) path containing features files
-#	  2) susedata path
-#	  3) message type (warning or error)
-#	  4) short-form output file (optional)
+#	  2) short-form output file (optional)
 #
 # Output: Info messages written to stdout
-#	  warning/error-cmds, warning/error-cmd-pkgs, warning/error-cmd-pkg-status
+#	  error-cmds, error-cmd-pkgs, error-cmd-pkg-status
 #	  name-value pairs written to output file
 #
 
 # functions
 function usage() {
-	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path susedata-path message-type [output-file]"
+	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path [output-file]"
 }
 
 # arguments
@@ -31,23 +29,21 @@ while getopts 'hd' OPTION; do
         esac
 done
 shift $((OPTIND - 1))
-if [ ! "$3" ]; then
+if [ ! "$1" ]; then
         usage >&2
 	exit 1
 else
         featuresPath="$1"
-	susedataPath="$2"
-	msgType="$3"
 fi
-if [ ! -z "$4" ]; then
-	outFile="$4"
+if [ ! -z "$2" ]; then
+	outFile="$2"
 fi
-[ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath, susedataPath: $susedataPath, msgType: $msgType, outFile: $outFile" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath, outFile: $outFile" >&2
 
-if [ ! -d "$featuresPath" ] || [ ! -d "$susedataPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
-	echo "$0: features path $featuresPath, susedata path $susedataPath, or output file $outFile does not exist, exiting..." >&2
-	[ $outFile ] && echo "$msgType-cmds: error" >> $outFile
-	[ $outFile ] && echo "$msgType-cmds-result: 0" >> $outFile
+if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
+	echo "$0: features path $featuresPath or output file $outFile does not exist, exiting..." >&2
+	[ $outFile ] && echo "error-cmds: error" >> $outFile
+	[ $outFile ] && echo "error-cmds-result: 0" >> $outFile
 	exit 1
 fi
 
@@ -61,45 +57,35 @@ confFile="$curPath/../sca-L0.conf"
 [ -r "$confFile" ] && source ${confFile}
 if [ -z "$SCA_HOME" ]; then
         echo "No sca-L0.conf file info; exiting..." >&2
-	[ $outFile ] && echo "$msgType-cmds: error" >> $outFile
-	[ $outFile ] && echo "$msgType-cmds-result: 0" >> $outFile
+	[ $outFile ] && echo "error-cmds: error" >> $outFile
+	[ $outFile ] && echo "error-cmds-result: 0" >> $outFile
 	exit 1
 fi
 
-# intro
-echo ">>> Checking $msgType message commands..."
-
-# error/warning commands
-[ $DEBUG ] && echo "*** DEBUG: $0: msgType: $msgType"
-if [ "$msgType" = "error" ]; then
-	msgDataTypes="$SCA_ERR_CMDS_DATATYPES"
-fi
-if [ "$msgType" = "warning" ]; then
-	msgDataTypes="$SCA_WARN_CMDS_DATATYPES"
-fi
-[ $DEBUG ] && echo "*** DEBUG: $0: msgDataTypes: $msgDataTypes"
+# start
+echo ">>> Checking error message commands..."
 rm $featuresPath/msgs.tmp $featuresPath/smsgs.tmp 2>/dev/null
-for dataType in $msgDataTypes; do
+for dataType in $SCA_ERROR_CMDS_DATATYPES; do
 	cat $featuresPath/"$dataType".tmp >> $featuresPath/msgs.tmp
 done
 if [ ! -s "$featuresPath/msgs.tmp" ]; then
-	echo "        No $msgType messages in supportconfig messages.txt file"
-	[ $outFile ] && echo "$msgType-cmds: none" >> $outFile
-	[ $outFile ] && echo "$msgType-cmds-result: 1" >> $outFile
+	echo "        No error messages in supportconfig messages.txt file"
+	[ $outFile ] && echo "error-cmds: none" >> $outFile
+	[ $outFile ] && echo "error-cmds-result: 1" >> $outFile
 	exit 0
 fi
-[ $DEBUG ] && echo "*** DEBUG: $0: $featuresPath/msgs.tmp:"
-[ $DEBUG ] && cat $featuresPath/msgs.tmp
+[ $DEBUG ] && echo "*** DEBUG: $0: $featuresPath/msgs.tmp:" >&2
+[ $DEBUG ] && cat $featuresPath/msgs.tmp >&2
 cat $featuresPath/msgs.tmp | sort -u > $featuresPath/smsgs.tmp
-[ $DEBUG ] && echo "*** DEBUG: $0: $featuresPath/smsgs.tmp:"
-[ $DEBUG ] && cat $featuresPath/smsgs.tmp
+[ $DEBUG ] && echo "*** DEBUG: $0: $featuresPath/smsgs.tmp:" >&2
+[ $DEBUG ] && cat $featuresPath/smsgs.tmp >&2
 cmds=""
 while IFS= read -r cmd; do
 	cmds="$cmds $cmd"
 done < $featuresPath/smsgs.tmp
 cmds=`echo $cmds | sed "s/^ //"`
-[ $DEBUG ] && echo "*** DEBUG: $0: cmds: $cmds"
-[ $outFile ] && echo "$msgType-cmds: $cmds" >> $outFile
+[ $DEBUG ] && echo "*** DEBUG: $0: cmds: $cmds" >&2
+[ $outFile ] && echo "error-cmds: $cmds" >> $outFile
 
 # packages and status
 os=`cat $featuresPath/os.tmp`
@@ -107,9 +93,9 @@ os=`cat $featuresPath/os.tmp`
 if [ -z "$os" ]; then
 	echo "        Error retrieving OS info"
 	for cmd in $cmds; do
-		[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: error" >> $outFile
+		[ $outFile ] && echo "error-cmds-pkgs-$cmd: error" >> $outFile
 	done
-	[ $outFile ] && echo "$msgType-cmds-result: 0" >> $outFile
+	[ $outFile ] && echo "error-cmds-result: 0" >> $outFile
 	exit 1
 fi
 osEquiv=`"$SCA_BIN_PATH"/os-equiv.sh "$os"`
@@ -121,18 +107,18 @@ osId=`echo $os | cut -d'_' -f1`
 osVerId=`echo $os | cut -d'_' -f2`
 osArch=`echo $os | cut -d'_' -f1,2 --complement`
 for cmd in $cmds; do
-	echo "        $msgType message generated by: $cmd"
+	echo "        Error message generated by: $cmd"
 	if echo $cmd | grep -q "^kernel"; then
 		kern=`cat $featuresPath/kernel.tmp`
        		kVer=`echo $kern | sed 's/-[a-z]*$//'`
        		flavor=`echo $kern | sed "s/$kVer-//"`
 		cmdPkgNames="kernel-$flavor"
 	else
-		sleCmdPkgNames=`grep "/$cmd " $susedataPath/rpmfiles-$os.txt 2>/dev/null | cut -d" " -f2 | sort -u | tr '\n' ' '`
-		[ $DEBUG ] && echo "*** DEBUG: $0: sleCmdPkgNames: $sleCmdPkgNames"
-		if ! ls $susedataPath/rpmfiles-"$os".txt >/dev/null 2>&1; then 
+		sleCmdPkgNames=`grep "/$cmd " $SCA_SUSEDATA_PATH/rpmfiles-$os.txt 2>/dev/null | cut -d" " -f2 | sort -u | tr '\n' ' '`
+		[ $DEBUG ] && echo "*** DEBUG: $0: sleCmdPkgNames: $sleCmdPkgNames" >&2
+		if ! ls $SCA_SUSEDATA_PATH/rpmfiles-"$os".txt >/dev/null 2>&1; then 
 			echo "            No package info for $cmd"
-			[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: no-info" >> $outFile
+			[ $outFile ] && echo "error-cmds-pkgs-$cmd: no-info" >> $outFile
 			errorState="TRUE"
 			continue
 		fi
@@ -142,7 +128,7 @@ for cmd in $cmds; do
 				scCmdPkgNames="$scCmdPkgNames $scCmdPkgName"
 			fi
 		done
-		[ $DEBUG ] && echo "*** DEBUG: $0: scCmdPkgNames: $scCmdPkgNames"
+		[ $DEBUG ] && echo "*** DEBUG: $0: scCmdPkgNames: $scCmdPkgNames" >&2
 		cmdPkgNames=""
 		for i in $scCmdPkgNames; do
 			if echo $i | grep -q "$cmd"; then
@@ -158,15 +144,15 @@ for cmd in $cmds; do
 			cmdPkgNames="$scCmdPkgNames"
 		fi
 	fi
-	[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgNames: $cmdPkgNames"
+	[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgNames: $cmdPkgNames" >&2
 	if [ -z "$cmdPkgNames" ]; then
 		echo "            No package info for $cmd"
-		[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: no-info" >> $outFile
+		[ $outFile ] && echo "error-cmds-pkgs-$cmd: no-info" >> $outFile
 		errorState="TRUE"
 	else
 		cmdPkgs=""
 		for cmdPkgName in $cmdPkgNames; do
-			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgName: $cmdPkgName"
+			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgName: $cmdPkgName" >&2
 			if [ "$cmdPkgName" = "kernel-$flavor" ]; then
 				cmdPkgVer="$kVer"
 			else
@@ -175,42 +161,42 @@ for cmd in $cmds; do
 			cmdPkgs="$cmdPkgs $cmdPkgName-$cmdPkgVer"
 		done
 		cmdPkgs=`echo $cmdPkgs | sed "s/^ //"`
-		[ $outFile ] && echo "$msgType-cmds-pkgs-$cmd: $cmdPkgs" >> $outFile
+		[ $outFile ] && echo "error-cmds-pkgs-$cmd: $cmdPkgs" >> $outFile
 		for cmdPkg in $cmdPkgs; do
-			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkg: $cmdPkg"
+			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkg: $cmdPkg" >&2
 			echo "            $cmd package: $cmdPkg"
 			cmdPkgName=`echo $cmdPkg | rev | cut -d"-" -f1,2 --complement | rev`
 			cmdPkgVer=`echo $cmdPkg | rev | cut -d"-" -f1,2 | rev`
-			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgName: $cmdPkgName, cmdPkgVer: $cmdPkgVer"
-			cmdPkgCur=`grep "^$cmdPkgName-[0-9]" $susedataPath/rpms-$os.txt 2>/dev/null | tail -1 | sed "s/\.rpm$//" | sed "s/\.noarch$//" | sed "s/\.${arch}$//"`
-			if ! ls $susedataPath/rpms-"$os".txt >/dev/null 2>&1; then
+			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgName: $cmdPkgName, cmdPkgVer: $cmdPkgVer" >&2
+			cmdPkgCur=`grep "^$cmdPkgName-[0-9]" $SCA_SUSEDATA_PATH/rpms-$os.txt 2>/dev/null | tail -1 | sed "s/\.rpm$//" | sed "s/\.noarch$//" | sed "s/\.${arch}$//"`
+			if ! ls $SCA_SUSEDATA_PATH/rpms-"$os".txt >/dev/null 2>&1; then
 				echo "                No current rpm version info for $cmdPkgName"
-				[ $outFile ] && echo "$msgType-cmds-pkg-status-$cmdPkg: no-info" >> $outFile
+				[ $outFile ] && echo "error-cmds-pkg-status-$cmdPkg: no-info" >> $outFile
 				errorState="TRUE"
 				continue
 			fi
 			cmdPkgCurVer=`echo $cmdPkgCur | sed "s/${cmdPkgName}-//"`
-			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgCur: $cmdPkgCur, cmdPkgCurVer: $cmdPkgCurVer"
+			[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgCur: $cmdPkgCur, cmdPkgCurVer: $cmdPkgCurVer" >&2
 			if [ -z "$cmdPkgCurVer" ]; then
 				echo "                Error retrieving version info for $cmdPkgName"
-				[ $outFile ] && echo "$msgType-cmds-pkg-status-$cmdPkg: error" >> $outFile
+				[ $outFile ] && echo "error-cmds-pkg-status-$cmdPkg: error" >> $outFile
 				errorState="TRUE"
 			elif ! echo "$cmdPkgCur" | grep -q "$cmdPkgVer"; then
 				echo "                $cmdPkgName-$cmdPkgVer package status: downlevel (current version: $cmdPkgCur)"
-				[ $outFile ] && echo "$msgType-cmds-pkg-status-$cmdPkg: downlevel" >> $outFile
+				[ $outFile ] && echo "error-cmds-pkg-status-$cmdPkg: downlevel" >> $outFile
 				downlevelState="TRUE"
 			else
 				echo "                $cmdPkgName-$cmdPkgVer package status: current"
-				[ $outFile ] && echo "$msgType-cmds-pkg-status-$cmdPkg: current" >> $outFile
+				[ $outFile ] && echo "error-cmds-pkg-status-$cmdPkg: current" >> $outFile
 			fi
 		done
 	fi
 done < $featuresPath/smsgs.tmp
 
 if [ "$errorState" = "TRUE" ] || [ "$downlevelState" = "TRUE" ] ; then
-	msgCmdsResult="0"
+	errorCmdsResult="0"
 else
-	msgCmdsResult="-1"
+	errorCmdsResult="-1"
 fi
-[ $outFile ] && echo "$msgType-cmds-result: $msgCmdsResult" >> "$outFile"
+[ $outFile ] && echo "error-cmds-result: $errorCmdsResult" >> "$outFile"
 exit 0

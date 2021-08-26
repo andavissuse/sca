@@ -46,12 +46,10 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
         exit 1
 fi
 
-# intro
+# start
 echo ">>> Checking kernel modules..."
-
-# kmods
 basicHealthFile="$featuresPath/basic-health-check.txt"
-[ $DEBUG ] && echo "*** DEBUG: $0: basicHealthFile: $basicHealthFile"
+[ $DEBUG ] && echo "*** DEBUG: $0: basicHealthFile: $basicHealthFile" >&2
 if [ ! -f $basicHealthFile ]; then
 	echo "        No module info available"
 	[ $outFile ] && echo "kmods-external: error" >> $outFile

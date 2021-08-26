@@ -1,5 +1,5 @@
 # sca-L0
-Utility for doing "Level 0" analysis on supportconfigs (top-level executable is sca-L0.sh).  Directly reports some info; for other info, performs nearest-neighbor analysis to find similar supportconfigs from YES certifications, SRs, and bugs.  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
+Utility for doing Level-0 analysis on supportconfigs (top-level executable is sca-L0.sh).  Directly reports some info; for other info, performs nearest-neighbor analysis to find similar supportconfigs from YES certifications, SRs, and bugs.  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
 # Structure
 
@@ -8,9 +8,6 @@ Config file containing variables (e.g., paths, datatypes) for use by scripts
 
 ## bin directory
 bash and python scripts to analyze supportconfigs
-
-## packaging directory
-spec file to be used in packaging
 
 # Instructions
 
@@ -26,14 +23,13 @@ To analyze a supportconfig:
   * Vectorize other features then perform nearest-neighbor analysis to find similar supportconfigs and related SRs/bugs/certs)
 
 # sca-L0 results
-By default (if invoked w/o options), sca-L0 outputs information for all categories (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs) to stdout.
+By default (if invoked w/o -c option), sca-L0 outputs information for all categories (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs) to stdout.
 
 The "-c" option can be used to restrict checks/output to specific categories.
 
 The "-o" option writes short-form output (name-value pairs) to the file specified, along with an overall "good/bad/need-more-info" result for each category.  Results are determined as follows:
 
 Note: Any situation where sca-L0 does not/cannot determine category info will cause an "undetermined (0)" result. 
-
 ## os
 * good (1):		OS version is supported (no LTSS or other custom support contract required)
 * bad (-1):		OS version is out-of-support (not covered by general or LTSS support)
@@ -73,6 +69,3 @@ Note: Any situation where sca-L0 does not/cannot determine category info will ca
 * good (1):		No bugs found
 * bad (-1):		sca-L0 found one or more bugs w/ greater than 80% match
 * need-more-info (0):	Any other result
-
-# Packaging
-sca-L0 package is built in https://build.opensuse.org/project/show/home:andavis:sca.  Note that the sca-L0 package depends on sca-datasets and sca-susedata package (from github sca-databuild project).

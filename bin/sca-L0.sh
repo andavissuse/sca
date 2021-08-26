@@ -152,7 +152,7 @@ fi
 #
 # set variables (command-line opts override conf file)
 #
-[ -z "$categories" ] && categories="$SCA_CATEGORIES"
+[ -z "$categories" ] && categories="$SCA_CHECK_CATEGORIES"
 [ -z "$datasetsPath" ] && datasetsPath="$SCA_DATASETS_PATH"
 [ -z "$susedataPath" ] && susedataPath="$SCA_SUSEDATA_PATH"
 [ -z "$tmpPath" ] && tmpPath="$SCA_TMP_PATH"
@@ -176,17 +176,17 @@ echo ">>> sca-L0 timestamp: $ts"
 # report sca-L0 version and default parameters to check
 echo ">>> sca-L0 version: $VERSION"
 [ $outFile ] && echo "sca-l0-version: $VERSION" >> $outFile
-[ $outFile ] && echo "sca-l0-default-checks: $SCA_CATEGORIES" >> $outFile
+[ $outFile ] && echo "sca-l0-default-checks: $SCA_CHECK_CATEGORIES" >> $outFile
 
 # these steps are always executed (regardless of parameter arguments)
 untarAndCheck
-extractScInfo
 supportconfigDate
+extractScInfo
 
 # OS version supportability
 if echo "$categories" | grep -q -E "^os$|^os | os | os$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$debugOpt" "$tmpDir" "$susedataPath" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$tmpDir" "$susedataPath" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "os: NA" >> $outFile
 	[ $outFile ] && echo "os-support: NA" >> $outFile
@@ -195,8 +195,8 @@ fi
 
 # system info (incl. nearest neighbor to find hardware certs)
 if echo "$categories" | grep -q -E "^system$|^system | system | system$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$debugOpt" "$tmpDir" "$datasetsPath" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$tmpDir" "$datasetsPath" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$tmpDir" "$outFile"
 else
         [ $outFile ] && echo "system: NA" >> $outFile
         [ $outFile ] && echo "system-certs: NA" >> $outFile
@@ -205,8 +205,8 @@ fi
 
 # kernel
 if echo "$categories" | grep -q -E "^kernel$|^kernel | kernel | kernel$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$debugOpt" "$tmpDir" "$susedataPath" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$tmpDir" "$susedataPath" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "kernel: NA" >> $outFile
 	[ $outFile ] && echo "kernel-status: NA" >> $outFile
@@ -225,8 +225,8 @@ fi
 
 # warning message commands
 if echo "$categories" | grep -q -E "^warning-cmds$|^warning-cmds | warning-cmds | warning-cmds$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/msg-cmds-info.sh "$debugOpt" "$tmpDir" "$susedataPath" "warning" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/msg-cmds-info.sh "$tmpDir" "$susedataPath" "warning" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/warning-cmds-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/warning-cmds-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "warning-cmds: NA" >> $outFile
 	[ $outFile ] && echo "warning-cmds-result: NA" >> $outFile
@@ -234,8 +234,8 @@ fi
 
 # error message commands
 if echo "$categories" | grep -q -E "^error-cmds$|^error-cmds | error-cmds | error-cmds$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/msg-cmds-info.sh "$debugOpt" "$tmpDir" "$susedataPath" "error" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/msg-cmds-info.sh "$tmpDir" "$susedataPath" "error" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/error-cmds-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/error-cmds-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "error-cmds: NA" >> $outFile
 	[ $outFile ] && echo "error-cmds-result: NA" >> $outFile
@@ -243,8 +243,8 @@ fi
 
 # predicting SRs
 if echo "$categories" | grep -q -E "^srs$|^srs | srs | srs$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/srs-bugs-info.sh "$debugOpt" "$tmpDir" "$datasetsPath" "srs" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/srs-bugs-info.sh "$tmpDir" "$datasetsPath" "srs" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/srs-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/srs-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "srs: NA" >> $outFile
 	[ $outFile ] && echo "srs-result: NA" >> $outFile
@@ -252,8 +252,8 @@ fi
 
 # predicting bugs
 if  echo "$categories" | grep -q -E "^bugs$|^bugs | bugs | bugs$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/srs-bugs-info.sh "$debugOpt" "$tmpDir" "$datasetsPath" "bugs" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/srs-bugs-info.sh "$tmpDir" "$datasetsPath" "bugs" "$outFile"
+	[ $DEBUG ] && $SCA_BIN_PATH/bugs-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $SCA_BIN_PATH/bugs-info.sh "$tmpDir" "$outFile"
 else
 	[ $outFile ] && echo "bugs: NA" >> $outFile
 	[ $outFile ] && echo "bugs-result: NA" >> $outFile

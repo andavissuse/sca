@@ -4,7 +4,6 @@
 # This script outputs OS information (OS name, version supportability, etc.)
 #
 # Inputs: 1) Path containing features files
-#	  2) susedata path
 #	  3) short-form output file (optional)
 #
 # Output: Info messages written to stdout
@@ -13,7 +12,7 @@
 
 # functions
 function usage() {
-	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path susedata-path [output-file]"
+	echo "Usage: `basename $0` [-h (usage)] [-d(ebug)] features-path [output-file]"
 }
 
 # arguments
@@ -29,19 +28,18 @@ while getopts 'hd' OPTION; do
         esac
 done
 shift $((OPTIND - 1))
-if [ -z "$2" ]; then
+if [ -z "$1" ]; then
         usage >&2
 	exit 1
 else
         featuresPath="$1"
-	susedataPath="$2"
 fi
-if [ ! -z "$3" ]; then
-	outFile="$3"
+if [ ! -z "$2" ]; then
+	outFile="$2"
 fi
 
-if [ ! -d "$featuresPath" ] || [ ! -d "$susedataPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
-	echo "$0: features path $featuresPath, susedata path $susedataPath, or output file $outFile does not exist, exiting..." >&2
+if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
+	echo "$0: features path $featuresPath or output file $outFile does not exist, exiting..." >&2
 	[ $outFile ] && echo "os: error" >> $outFile
 	[ $outFile ] && echo "os-support: error" >> $outFile
 	[ $outFile ] && echo "os-result: 0" >> $outFile
@@ -64,10 +62,8 @@ if [ -z "$SCA_HOME" ]; then
 	exit 1
 fi
 
-# intro
+# start
 echo ">>> Checking OS version and support status..."
-
-# os
 os=`cat "$featuresPath"/os.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
 if [ -z "$os" ]; then
@@ -109,7 +105,7 @@ echo "        OS: $osName $osVer $osArch"
 [ $outFile ] && echo "os: $os" >> $outFile
 
 # support status
-lifecycleInfo=`grep "$os" $susedataPath/lifecycles.csv`
+lifecycleInfo=`grep "$os" $SCA_SUSEDATA_PATH/lifecycles.csv`
 [ $DEBUG ] && echo "*** DEBUG: $0: lifecycleInfo: $lifecycleInfo" >&2
 endLtss=`echo $lifecycleInfo | grep "$os" | cut -d',' -f4`
 endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
