@@ -44,6 +44,7 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
         [ $outFile ] && echo "srs-result: 0" >> $outFile
         exit 1
 fi
+[ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath" >&2
 
 # config file
 curPath=`dirname "$(realpath "$0")"`
@@ -59,11 +60,15 @@ if [ -z "$SCA_HOME" ]; then
 	[ $outFile ] && echo "srs-result: error" >> $outFile
 	exit 1
 fi
+binPath="$SCA_BIN_PATH"
+datasetsPath="$SCA_DATASETS_PATH"
+datasetsPathPrivate="$SCA_DATASETS_PATH_PRIVATE"
+srsDataTypes="$SCA_SRS_DATATYPES"
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, datasetsPathPrivate: $datasetsPathPrivate, srsDataTypes: $srsDataTypes" >&2
 
 # start
 echo ">>> Checking SRs..."
-srsResult=0
-cutoffStr=`echo $SCA_SRS_CUTOFF | sed 's/\.//' | sed 's/$/%/'`
+
 os=`cat $featuresPath/os.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
 if [ -z "$os" ]; then
@@ -72,111 +77,88 @@ if [ -z "$os" ]; then
         [ $outFile ] && echo "srs-result: 0" >> $outFile
         exit 1
 fi
-osEquiv=`"$SCA_BIN_PATH"/os-equiv.sh "$os"`
+osEquiv=`$binPath/os-other.sh "$os" equiv`
 [ $DEBUG ] && echo "*** DEBUG: $0: osEquiv: $osEquiv" >&2
 if [ ! -z "$osEquiv" ]; then
 	os="$osEquiv"
 fi
-osId=`echo $os | cut -d'_' -f1`
-osVerId=`echo $os | cut -d'_' -f2`
-osArch=`echo $os | cut -d'_' -f1,2 --complement`
+
 dataTypes=""
-for dataType in $SCA_SRS_DATATYPES; do
-	if [ -s "$featuresPath"/"$dataType".tmp ]; then
+for dataType in $srsDataTypes; do
+	if [ -s "$featuresPath/$dataType.tmp" ] && [ -r "$datasetsPath/$dataType.dat" ]; then
 		dataTypes="$dataTypes $dataType"
 	fi
 done
+[ $DEBUG ] && echo "*** DEBUG: $0: dataTypes: $dataTypes" >&2
 if [ -z "$dataTypes" ]; then
 	echo "        No warning/error messages to compare against SRs"
 	[ $outFile ] && echo "srs: none" >> $outFile
 	[ $outFile ] && echo "srs-result: 1" >> $outFile
 	exit 0
 fi
+
+# build datasets argument to pass to knn_combined
+knnCombinedArgs="$datasetsPath/srs.dat"
 for dataType in $dataTypes; do
-	if [ ! -s "$SCA_DATASETS_PATH"/"$dataType"-"$os".dat ]; then
-		echo "        Missing one or more datasets for $os"
-		[ $outFile ] && echo "srs: no-info" >> $outFile
-		[ $outFile ] && echo "srs-result: 0" >> $outFile
-		exit 1
-	fi
+#	metricVar='$'`echo SCA_SRS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
+#	eval metric=$metricVar
+	metric="jaccard"
+	radius="0.2"
+#	weightVar='$'`echo SCA_SRS_"${dataType^^}"_WEIGHT | sed "s/-/_/g"`
+#	eval weight=$weightVar
+	weight="1"
+	[ $DEBUG ] && echo "*** DEBUG: $0: metricVar: $metricVar, radiusVar: $radiusVar, weightVar: $weightVar" >&2
+	datasetArg="$datasetsPath/$dataType.dat $featuresPath/$dataType.tmp $metric $radius $weight"
+	[ $DEBUG ] && echo "*** DEBUG: $0: datasetArg: $datasetArg" >&2
+	knnCombinedArgs="$knnCombinedArgs $datasetArg"
 done
-[ $DEBUG ] && echo "*** DEBUG: $0: dataTypes: $dataTypes" >&2
-dataTypeArgs=""
-for dataType in $dataTypes; do
-	metricVar='$'`echo SCA_SRS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
-	eval metric=$metricVar
-	weightVar='$'`echo SCA_SRS_"${dataType^^}"_WEIGHT | sed "s/-/_/g"`
-	eval weight=$weightVar
-	[ $DEBUG ] && echo "*** DEBUG: $0: metricVar: $metricVar, weightVar: $weightVar" >&2
-	dataTypeArg="$SCA_DATASETS_PATH/$dataType-$os.dat $metric $weight"
-	[ $DEBUG ] && echo "*** DEBUG: $0: dataTypeArg: $dataTypeArg" >&2
-	dataTypeArgs="$dataTypeArgs $dataTypeArg"
-done
-dataTypeArgs=`echo $dataTypeArgs | sed "s/^ //"`
-[ $DEBUG ] && echo "*** DEBUG: $0: dataTypeArgs: $dataTypeArgs" >&2
-if [ -z "$dataTypeArgs" ]; then
+knnCombinedArgs="$knnCombinedArgs $datasetsPath/os.dat $featuresPath/os.tmp jaccard 0 1"
+knnCombinedArgs=`echo $knnCombinedArgs | sed "s/^ //"`
+[ $DEBUG ] && echo "*** DEBUG: $0: knnCombinedArgs: $knnCombinedArgs" >&2
+if [ -z "$knnCombinedArgs" ]; then
 	echo "        Error retrieving SRs"
 	[ $outFile ] && echo "srs: error" >> $outFile
 	[ $outFile ] && echo "srs-result: 0" >> $outFile
 	exit 1
 fi
-[ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath" >&2
-idsScores=`python3 $SCA_BIN_PATH/knn_combined.py "$featuresPath" "$SCA_DATASETS_PATH"/srs.dat $dataTypeArgs 2>/dev/null`
-[ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores" >&2
-ids=""
-scores=""
-let numHighIds=0
-realIds=""
-isId="TRUE"
-for entry in `echo $idsScores | tr -d "[],'" | cut -d" " -f1-10`; do
-	if [ "$isId" = "TRUE" ]; then
-		id="$entry"
-		isId="FALSE"
-	else
-		score="$entry"
-		formattedScore=`printf "%0.2f" $score`
-		ids="$ids $id"
-		scores="$scores $formattedScore"
-		[ $DEBUG ] && echo "*** DEBUG: $0: score: $score" >&2
-		if (( $(echo "$score >= $SCA_SRS_CUTOFF" | bc -l) )); then
-			numHighIds=$(( numHighIds + 1 ))
-			srsResult=-1
-		fi
-		isId="TRUE"
-	fi
-done
-ids=`echo $ids | sed "s/^ //"`
-scores=`echo $scores | sed "s/^ //"`
-[ $DEBUG ] && echo "*** DEBUG: $0: ids: $ids" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: scores: $scores" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: numHighIds: $numHighIds" >&2
-if [ "$numHighIds" -eq "0" ]; then
-	echo "        No matching SRs found"
-	[ $outFile ] && echo "srs: none" >> $outFile
-	srsResult=1
+
+if [ "$DEBUG" ]; then 
+	idsScores=`python3 $binPath/knn_combined.py -d $knnCombinedArgs`
 else
-	echo "        Found $numHighIds SRs with $cutoffStr or greater match"
-	highIds=`echo $ids | cut -d" " -f1-${numHighIds}`
-	hashFile="$SCA_DATASETS_PATH_PRIVATE/srs-hash.dat"
-	[ $DEBUG ] && echo "*** DEBUG: $0: hashFile: $hashFile" >&2
-	if [ -f "$hashFile" ]; then
-		for highId in $highIds; do
-			realId=`grep $highId $hashFile | cut -d" " -f1`
-			[ $DEBUG ] && echo "*** DEBUG: $0: highId: $highId, realId: $realId" >&2
-			realIds="$realIds $realId"
-		done
-		highIds=`echo $realIds | sed "s/^ //"`
-	fi
-	[ $DEBUG ] && echo "*** DEBUG: $0: highIds: $highIds" >&2
-	[ $outFile ] && echo "srs: $highIds" >> $outFile
-	for index in $(seq 1 $numHighIds); do
-		highId=`echo $highIds | cut -d" " -f$index`
-		highScore=`echo $scores | cut -d" " -f$index`
-		echo "             ID: $highId, Score: $highScore"
-		[ $outFile ] && echo "srs-score-$highId: $highScore" >> $outFile
+	idsScores=`python3 $binPath/knn_combined.py $knnCombinedArgs`
+fi
+[ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores" >&2
+
+declare -a idsScoresArray=(`echo $idsScores | tr -d "[],'"`)
+if [ -z "$idsScoresArray" ]; then
+	echo "        SRs: none"
+	[ $outFile ] && echo "srs: none" >> $outFile
+	[ $outFile ] && echo "srs-result: 1" >> $outFile
+else
+	i=0
+	srs=""
+	while [ ! -z "${idsScoresArray[i]}" ]; do
+		srs="$srs ${idsScoresArray[i]}"
+		scores="$scores ${idsScoresArray[(($i+1))]}"
+		i=$((i + 2))
 	done
-	srsResult=-1
+	realSrs=""
+	if [ -r "$datasetsPathPrivate/srs-hash.dat" ]; then
+		for sr in $srs; do
+			realSr=`grep "$sr" "$datasetsPathPrivate/srs-hash.dat" | cut -d' ' -f1`
+			realSrs="$realSrs $realSr"
+		done
+		srs="$realSrs"
+	fi
+	[ $outFile ] && echo "srs: $srs" >> "$outFile"
+	i=1
+	for sr in $srs; do
+		score=`echo $scores | cut -d' ' -f$i`
+		echo "        SR: $sr, Score: $score"
+		[ $outFile ] && echo "srs-score-$sr: $score" >> "$outFile"
+		i=$((i + 1))
+	done
+	[ $outFile ] && echo "srs-result: -1" >> "$outFile"
 fi
 
-[ $outFile ] && echo "srs-result: $srsResult" >> "$outFile"
 exit 0

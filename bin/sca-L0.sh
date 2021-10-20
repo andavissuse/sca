@@ -54,11 +54,20 @@ function untarAndCheck() {
 
 function extractScInfo() {
 	echo ">>> Extracting info from supportconfig..."
+
 	for dataType in $SCA_ALL_DATATYPES; do
-		[ $DEBUG ] && echo "*** DEBUG: $0: dataType: $dataType"
+		[ $DEBUG ] && echo "*** DEBUG: $0: dataType: $dataType" >&2
 		[ $DEBUG ] && "$SCA_BIN_PATH"/"$dataType".sh "$debugOpt" "$tmpDir" > "$tmpDir"/"$dataType".tmp
 		[ ! $DEBUG ] && "$SCA_BIN_PATH"/"$dataType".sh "$tmpDir" > "$tmpDir"/"$dataType".tmp
 	done
+}
+
+function osOtherInfo() {
+	echo ">>> Determining equivalent/related OS info..."
+
+	os=`cat "$tmpDir"/os.tmp`
+	"$SCA_BIN_PATH"/os-other.sh "$os" equiv > "$tmpDir"/os-equiv.tmp
+	"$SCA_BIN_PATH"/os-other.sh "$os" related > "$tmpDir"/os-related.tmp
 }
 
 function supportconfigDate() {
@@ -73,12 +82,10 @@ function supportconfigDate() {
 # main routine
 #
 
-# version
-VERSION="devel"
-
 # arguments
 if [ "$1" = "--help" ]; then
 	usage
+
 	exit 0
 fi
 while getopts 'hdvc:p:s:t:o:' OPTION; do
@@ -92,8 +99,7 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 			debugOpt="-d"
                         ;;
 		v)
-			echo "$VERSION"
-			exit 0
+			VERSION_ARG=1
 			;;
 		c)
 			categories=`echo $OPTARG | tr ',' ' '`
@@ -119,16 +125,22 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 		o)
 			outFile="$OPTARG"
 			if [ -f "$outFile" ]; then
-				exitError "Output file already exists, exiting..."
+				echo "Short-form output file $outFile already exists, overwrite (y/N)? "
+				read reply
+				if [ "$reply" = "y" ]; then
+					rm $outFile
+				else	
+					exitError "Exiting..."
+				fi
 			fi
 			if [ ! -d `dirname "$outFile"` ]; then
-				exitError "output file path `dirname $outFile` does not exist, exiting..."
+				exitError "Short-form output file path `dirname $outFile` does not exist, exiting..."
 			fi
 			;;
         esac
 done
 shift $((OPTIND - 1))
-if [ ! "$1" ]; then
+if [ ! $VERSION_ARG ] && [ ! "$1" ]; then
         usage
         exit 1
 else
@@ -157,31 +169,38 @@ fi
 [ -z "$susedataPath" ] && susedataPath="$SCA_SUSEDATA_PATH"
 [ -z "$tmpPath" ] && tmpPath="$SCA_TMP_PATH"
 
-[ $DEBUG ] && echo "*** DEBUG: $0: SCA_HOME: $SCA_HOME"
-[ $DEBUG ] && echo "*** DEBUG: $0: SCA_BIN_PATH: $SCA_BIN_PATH"
-[ $DEBUG ] && echo "*** DEBUG: $0: datasetsPath: $datasetsPath"
-[ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath"
-[ $DEBUG ] && echo "*** DEBUG: $0: tmpPath: $tmpPath"
-[ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories"
-[ $DEBUG ] && echo "*** DEBUG: $0: scTar: $scTar"
+[ $DEBUG ] && echo "*** DEBUG: $0: SCA_HOME: $SCA_HOME" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: SCA_BIN_PATH: $SCA_BIN_PATH" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: datasetsPath: $datasetsPath" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: tmpPath: $tmpPath" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: scTar: $scTar" >&2
+
+scaVer=`cat $SCA_HOME/sca-L0.version`
+if [ ! -z "$VERSION_ARG" ]; then
+	echo $scaVer
+	exit 0
+fi
 
 # tmp dir and current time
 tmpDir=`mktemp -p $tmpPath -d`
-[ $DEBUG ] && echo "*** DEBUG: $0: tmpDir: $tmpDir"
+[ $DEBUG ] && echo "*** DEBUG: $0: tmpDir: $tmpDir" >&2
 tsIso=`date +"%Y-%m-%dT%H:%M:%S"`
 ts=`date -d "$tsIso" +%s`
 echo ">>> sca-L0 timestamp: $ts"
 [ $outFile ] && echo "sca-l0-timestamp: $ts" >> $outFile
 
 # report sca-L0 version and default parameters to check
-echo ">>> sca-L0 version: $VERSION"
-[ $outFile ] && echo "sca-l0-version: $VERSION" >> $outFile
+echo ">>> sca-L0 version: $scaVer"
+[ $outFile ] && echo "sca-l0-version: $scaVer" >> $outFile
 [ $outFile ] && echo "sca-l0-default-checks: $SCA_CHECK_CATEGORIES" >> $outFile
 
 # these steps are always executed (regardless of parameter arguments)
 untarAndCheck
 supportconfigDate
 extractScInfo
+osOtherInfo
 
 # OS version supportability
 if echo "$categories" | grep -q -E "^os$|^os | os | os$"; then

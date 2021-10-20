@@ -61,6 +61,8 @@ if [ -z "$SCA_HOME" ]; then
 	[ $outFile ] && echo "os-result: 0"
 	exit 1
 fi
+susedataPath="$SCA_SUSEDATA_PATH"
+[ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath" >&2
 
 # start
 echo ">>> Checking OS version and support status..."
@@ -105,7 +107,7 @@ echo "        OS: $osName $osVer $osArch"
 [ $outFile ] && echo "os: $os" >> $outFile
 
 # support status
-lifecycleInfo=`grep "$os" $SCA_SUSEDATA_PATH/lifecycles.csv`
+lifecycleInfo=`grep "$os" $susedataPath/lifecycles.csv`
 [ $DEBUG ] && echo "*** DEBUG: $0: lifecycleInfo: $lifecycleInfo" >&2
 endLtss=`echo $lifecycleInfo | grep "$os" | cut -d',' -f4`
 endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`

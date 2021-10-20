@@ -3,13 +3,18 @@
 # the provided weights, then outputs a list of nearest bugs|srs|certs along
 # with their distances.
 #
-# Inputs: 1) directory containing feature files (named $datatype.tmp)
-#         2) output type (srs|bugs|certs) dataset file
-#         3) dataset file1, distance metric1, weight1
-#         4) (optional) dataset file2, distance metric2, weight2
+# Input:  1) class file
+#         2) dataset file 1
+#         3) feature file 1
+#         4) distance metric 1
+#         5) radius 1
+#         6) weight 1
+#         7) (optional) dataset file 2
+#         8) (optional) feature file 2
+#         9) (optional) distance metric 2
 #         ...
 #
-# Output: List of SRs or bugs along with their nearest neighbor distances
+# Output: List of class matches along with their nearest neighbor distances
 #
 
 from __future__ import print_function
@@ -17,12 +22,14 @@ from __future__ import print_function
 import getopt
 import sys
 import os
+import numpy as np
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+from functools import reduce
 import knn 
 
 def usage():
-    print("Usage: " + sys.argv[0] + " [-d(ebug)] feature_files_dir outtype_dataset_file dataset_file1 distance_metric1 weight1 dataset_file2 distance_metric2 weight2 ...", file=sys.stderr)
+    print("Usage: " + sys.argv[0] + " [-d(ebug)] class_file dataset_file_1 feature_file_1 distance_metric_1 radius_1 weight_1 dataset_file_2 feature_file_2 distance_metric_2 radius_2 weight_2 ...", file=sys.stderr)
 
 def main(argv):
     arg_index_start = 0
@@ -42,91 +49,64 @@ def main(argv):
             arg_index_start = 1
 
     # arguments
-    if not argv[arg_index_start + 4]:
+    if not argv[arg_index_start + 5]:
         usage()
         sys.exit(2)
-    if os.path.isdir(argv[arg_index_start]):
-        feature_files_dir = argv[arg_index_start]
-    else:
-        print("Feature directory does not exist: ", argv[arg_index_start], file=sys.stderr)
-        usage()
-        sys.exit(2)
-    if os.path.isfile(argv[arg_index_start + 1]):
-        outtype_dataset_file = argv[arg_index_start + 1]
-    else:
-        print("Out type datafile does not exist: ", argv[arg_index_start + 1], file=sys.stderr)
-        usage()
-        sys.exit(2)
-    i = 2
-    datatype_filenames = []
-    datatypes = []
+    class_file = argv[arg_index_start]
+    dataset_files = []
+    feature_files = []
     dist_metrics = []
+    radii = []
     weights = []
-    while i < len(args):
-        if os.path.isfile(argv[arg_index_start + i]):
-            datatype_filename = argv[arg_index_start + i]
-            datatype_filenames.append(datatype_filename)
-            datatype = os.path.basename(datatype_filename.rsplit('-', 1)[0])
-            datatypes.append(datatype)
-        else:
-            print("Input datatype file does not exist: ", argv[arg_index_start + i], file=sys.stderr)
-            usage()
-            sys.exit(2)
-        if argv[arg_index_start + (i + 1)]:
-            dist_metrics.append(argv[arg_index_start + (i + 1)])
-        else:
-            print("No distance metric provided for ", argv[arg_index_start + i], file=sys.stderr)
-            usage()
-            sys.exit(2)
-        if argv[arg_index_start + (i + 2)]:
-            weights.append(argv[arg_index_start + (i + 2)])
-        else:
-            print("No weight provided for ", argv[arg_index_start + i], file=sys.stderr)
-            usage()
-            sys.exit(2)
-        i = i + 3
-    outtype_col_name  = "Id"
+    for i in range(arg_index_start + 1, len(args), 5):
+        dataset_files.append(argv[i])
+        feature_files.append(argv[i + 1])
+        dist_metrics.append(argv[i + 2])
+        radii.append(argv[i + 3])
+        weights.append(argv[i + 4])
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": datatypes:", datatypes, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": class_file:", class_file, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": dataset_files:", dataset_files, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": feature_files:", feature_files, file=sys.stderr)
         print("*** DEBUG: " + sys.argv[0] + ": dist_metrics:", dist_metrics, file=sys.stderr)
+        print("*** DEBUG: " + sys.argv[0] + ": radii:", radii, file=sys.stderr)
         print("*** DEBUG: " + sys.argv[0] + ": weights:", weights, file=sys.stderr)
 
-    total_ids_scores = []
-    for datatype_num in range(len(datatypes)):
+    # get nearest neighbor results from each dataset, put into pandas arrays
+    dfs_nns = []
+    for dataset_num in range(len(dataset_files)):
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": datatype_num:", datatype_num, file=sys.stderr)
-        features_file = feature_files_dir + "/" + datatypes[datatype_num] + ".tmp"
-        if not os.path.isfile(features_file):
-            print("Features file does not exist: ", features_file, file=sys.stderr)
-            sys.exit(2)
-        knn_args = features_file + " " + outtype_dataset_file + " " + datatype_filenames[datatype_num] + " " + dist_metrics[datatype_num] + " false"
-        ids_scores = knn.main(knn_args.split())
+            print("*** DEBUG: " + sys.argv[0] + ": dataset_num:", dataset_num, file=sys.stderr)
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": ids_scores:", ids_scores, file=sys.stderr)
-        total_ids_scores = total_ids_scores + ids_scores
+            knn_args = "-d " + class_file + " " + dataset_files[dataset_num] + " " + feature_files[dataset_num] + " " + dist_metrics[dataset_num] + " " + radii[dataset_num]
+        else:
+            knn_args = class_file + " " + dataset_files[dataset_num] + " " + feature_files[dataset_num] + " " + dist_metrics[dataset_num] + " " + radii[dataset_num]
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": total_ids_scores:", total_ids_scores, file=sys.stderr)
+            print("*** DEBUG: " + sys.argv[0] + ": knn_args:", knn_args, file=sys.stderr)
+        dfs_nns.append(knn.main(knn_args.split()))
+        if DEBUG == "TRUE":
+            print("*** DEBUG: " + sys.argv[0] + ": dfs_nns[dataset_num]:", dfs_nns[dataset_num], file=sys.stderr)
 
-    new_total_ids_scores = []
-    for id_score in total_ids_scores:
+    # inner-join all results
+#    df_merged = reduce(lambda left,right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_nns)
+    df_merged = dfs_nns[0]
+    for dataset_num in range(len(dataset_files) - 1):
+        dfs_to_merge = [df_merged, dfs_nns[dataset_num + 1]]
+        df_merged = reduce(lambda left, right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_to_merge)
+        df_merged['Score'] = df_merged['Score_x'] + df_merged['Score_y']
+        df_merged.drop(columns=['Score_x', 'Score_y'], inplace=True)
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": id_score:", id_score, file=sys.stderr)
-        found = "FALSE" 
-        for new_id_score in new_total_ids_scores:
-            if new_id_score[0] == id_score[0]:
-                new_id_score[1] = new_id_score[1] + id_score[1]
-                found = "TRUE"
-                break
-        if found == "FALSE":
-            new_total_ids_scores.append(id_score)
-        if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": new_total_ids_scores:", new_total_ids_scores, file=sys.stderr)
-    for id_score in new_total_ids_scores:
-        id_score[1] = id_score[1]/len(datatypes)
-    new_total_ids_scores.sort(key=lambda x:x[1],reverse=True)
+            print("*** DEBUG: " + sys.argv[0] + ": df_merged:", df_merged, file=sys.stderr)
+    aggregation_functions = {'Score': 'sum'}
+    df_scored = df_merged.groupby(df_merged['Id']).aggregate(aggregation_functions)
+    df_scored['Score'] = df_scored['Score'].div(len(dataset_files)).round(2)
+    df_scored = df_scored.sort_values(by=['Score'], ascending=False)
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": new_total_ids_score:", new_total_ids_scores, file=sys.stderr)
-    return(new_total_ids_scores)
+        print("*** DEBUG: " + sys.argv[0] + ": df_scored:", df_scored, file=sys.stderr)
+    scored_list = df_scored.reset_index().values.tolist()
+    if DEBUG == "TRUE":
+        print("*** DEBUG: " + sys.argv[0] + ": scored_list:", scored_list, file=sys.stderr)
+    return(scored_list)
 
 if __name__ == "__main__":
     ret_val = main(sys.argv[1:])

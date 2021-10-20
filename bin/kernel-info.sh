@@ -61,8 +61,15 @@ if [ -z "$SCA_HOME" ]; then
 	[ $outFile ] && echo "kernel-result: error" >> $outFile
 	exit 1
 fi
+binPath="$SCA_BIN_PATH"
+susedataPath="$SCA_SUSEDATA_PATH"
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, susedataPath: $susedataPath" >&2
 
+#
 # start
+#
+
+# get kernel
 echo ">>> Checking kernel..."
 kern=`cat $featuresPath/kernel.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: kern: $kern" >&2
@@ -76,20 +83,28 @@ fi
 echo "        Kernel: $kern"
 [ $outFile ] && echo "kernel: $kern" >> $outFile
 
-# kernel status
+# get os
 os=`cat $featuresPath/os.tmp`
 [ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
 if [ -z "$os" ]; then
-	echo "        Error retrieving kernel info"
+	echo "        Error retrieving OS info"
+	[ $outFile ] && echo "kernel-status: error" >> $outFile
+	[ $outfile ] && echo "kernel-result: 0" >> $outFile
+	exit 1
+fi
+osEquiv=`$binPath/os-other.sh $os equiv`
+[ $DEBUG ] && echo "*** DEBUG: $0: osEquiv: $osEquiv" >&2
+if [ ! -z "$osEquiv" ]; then
+	os="$osEquiv"
+fi
+if [ ! -r "$susedataPath/rpms-$os.txt" ]; then
+	echo "        Error retrieving OS data"
 	[ $outFile ] && echo "kernel-status: error" >> $outFile
 	[ $outFile ] && echo "kernel-result: 0" >> $outFile
 	exit 1
 fi
-osEquiv=`"$SCA_BIN_PATH"/os-equiv.sh "$os"`
-[ $DEBUG ] && echo "*** DEBUG: $0: osEquiv: $osEquiv" >&2
-if [ "$osEquiv" ]; then
-	os="$osEquiv"
-fi
+
+# get kernel status
 kVer=`echo $kern | sed 's/-[a-z]*$//'`
 flavor=`echo $kern | sed "s/$kVer-//"`
 [ $DEBUG ] && echo "*** DEBUG: $0: kVer: $kVer, flavor: $flavor" >&2
@@ -116,4 +131,5 @@ else
 	[ $outFile ] && echo "kernel-status: current" >> $outFile
 	[ $outFile ] && echo "kernel-result: 1" >> $outFile
 fi
+
 exit 0
