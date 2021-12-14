@@ -49,7 +49,7 @@ def main(argv):
     dataset_file = argv[arg_index_start + 1]
     feature_file = argv[arg_index_start + 2]
     dist_metric = argv[arg_index_start + 3]
-    cutoff_radius = argv[arg_index_start + 4]
+    cutoff_radius = float(argv[arg_index_start + 4])
     if DEBUG == "TRUE":
         print("*** DEBUG: knn.py: class_file:", class_file, file=sys.stderr)
         print("*** DEBUG: knn.py: dataset_file:", dataset_file, file=sys.stderr)
@@ -58,12 +58,23 @@ def main(argv):
         print("*** DEBUG: knn.py: cutoff_radius:", cutoff_radius, file=sys.stderr)
 
     # read the dataset
-    df_dataset = pd.read_csv(dataset_file, sep=" ", dtype={'000_md5sum': str})
+    if ".pkl" in dataset_file:
+        df_pkl = pd.read_pickle(dataset_file, 'gzip')
+        df_dataset = df_pkl.astype({'000_md5sum':'str'})
+    else:
+        df_dataset = pd.read_csv(dataset_file, sep=" ", dtype={'000_md5sum':'str'})
     if DEBUG == "TRUE":
         print("*** DEBUG: knn.py: df_dataset:\n", df_dataset, file=sys.stderr)
-    df_class = pd.read_csv(class_file, sep=" ", dtype={'000_md5sum': str, 'Id': str})
+        print("*** DEBUG: knn.py: df_dataset dtypes:\n", df_dataset.dtypes, file=sys.stderr)
+    if ".pkl" in class_file:
+        df_pkl = pd.read_pickle(class_file, 'gzip')
+        df_pkl.drop(columns='level_0', inplace=True)
+        df_class = df_pkl.astype({'000_md5sum':'str', 'Id':'str'})
+    else:
+        df_class = pd.read_csv(class_file, sep=" ", dtype={'000_md5sum': str, 'Id': str})
     if DEBUG == "TRUE":
         print("*** DEBUG: knn.py: df_class:\n", df_class, file=sys.stderr)
+        print("*** DEBUG: knn.py: df_class:\n", df_class.dtypes, file=sys.stderr)
     df = pd.merge(df_dataset, df_class, on='000_md5sum', how='inner')
     if df.empty:
         if DEBUG == "TRUE":
@@ -106,6 +117,7 @@ def main(argv):
     Inputs_df = df.iloc[:, 1:df_cols - 1]
     if DEBUG == "TRUE":
         print("*** DEBUG: knn.py: Inputs_df:\n", Inputs_df, file=sys.stderr)
+        print("*** DEBUG: knn.py: Inputs_df dtypes:\n", Inputs_df.dtypes, file=sys.stderr)
     neigh.fit(Inputs_df)
 
     # find nearest neighbors in cutoff radius, change distance to score, return in pandas dataframe

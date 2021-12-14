@@ -46,21 +46,25 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
 	exit 1
 fi
 
-# config file
+# conf files
 curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-        echo "No sca-L0.conf file info; exiting..." >&2
-	[ $outFile ] && echo "os: error" >> $outFile
-	[ $outFile ] && echo "os-support: error" >> $outFile
-	[ $outFile ] && echo "os-result: 0"
-	exit 1
+mainConfFile="/usr/etc/sca-L0.conf"
+extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+if [ ! -r "$mainConfFile" ]; then
+        mainConfFile="/etc/sca-L0.conf"
+        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        if [ ! -r "$mainConfFile" ]; then
+                mainConfFile="$curPath/../sca-L0.conf"
+                extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+                if [ ! -r "$mainConfFile" ]; then
+                        exitError "No sca-L0 conf file info; exiting..."
+                fi
+        fi
 fi
+source $mainConfFile
+for extraConfFile in $extraConfFiles; do
+        source ${extraConfFile}
+done
 susedataPath="$SCA_SUSEDATA_PATH"
 [ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath" >&2
 
@@ -114,7 +118,7 @@ endGeneral=`echo $lifecycleInfo | grep "$os" | cut -d',' -f3`
 [ $DEBUG ] && echo "*** DEBUG: $0: endLtss: $endLtss, endGeneral: $endGeneral" >&2
 if [ -z "$endLtss" ] || [ -z "$endGeneral" ]; then
         echo "        No lifecycle data for $osName $osVer $osArch"
-        [ $outFile ] && echo "os-support: no-info" >> $outFile
+        [ $outFile ] && echo "os-support: error" >> $outFile
         [ $outFile ] && echo "os-result: 0" >> $outFile
         exit 1
 fi

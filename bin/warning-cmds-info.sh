@@ -47,20 +47,25 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
 	exit 1
 fi
 
-# config file
+# conf files
 curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-        echo "No sca-L0.conf file info; exiting..." >&2
-	[ $outFile ] && echo "warning-cmds: error" >> $outFile
-	[ $outFile ] && echo "warning-cmds-result: 0" >> $outFile
-	exit 1
+mainConfFile="/usr/etc/sca-L0.conf"
+extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+if [ ! -r "$mainConfFile" ]; then
+        mainConfFile="/etc/sca-L0.conf"
+        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        if [ ! -r "$mainConfFile" ]; then
+                mainConfFile="$curPath/../sca-L0.conf"
+                extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+                if [ ! -r "$mainConfFile" ]; then
+                        exitError "No sca-L0 conf file info; exiting..."
+                fi
+        fi
 fi
+source $mainConfFile
+for extraConfFile in $extraConfFiles; do
+        source ${extraConfFile}
+done
 binPath="$SCA_BIN_PATH"
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath" >&2
 
@@ -117,7 +122,7 @@ for cmd in $cmds; do
 		[ $DEBUG ] && echo "*** DEBUG: $0: sleCmdPkgNames: $sleCmdPkgNames" >&2
 		if ! ls $SCA_SUSEDATA_PATH/rpmfiles-"$os".txt >/dev/null 2>&1; then 
 			echo "            No package info for $cmd"
-			[ $outFile ] && echo "warning-cmds-pkgs-$cmd: no-info" >> $outFile
+			[ $outFile ] && echo "warning-cmds-pkgs-$cmd: error" >> $outFile
 			errorState="TRUE"
 			continue
 		fi
@@ -146,7 +151,7 @@ for cmd in $cmds; do
 	[ $DEBUG ] && echo "*** DEBUG: $0: cmdPkgNames: $cmdPkgNames" >&2
 	if [ -z "$cmdPkgNames" ]; then
 		echo "            No package info for $cmd"
-		[ $outFile ] && echo "warning-cmds-pkgs-$cmd: no-info" >> $outFile
+		[ $outFile ] && echo "warning-cmds-pkgs-$cmd: error" >> $outFile
 		errorState="TRUE"
 	else
 		cmdPkgs=""
@@ -170,7 +175,7 @@ for cmd in $cmds; do
 			cmdPkgCur=`grep "^$cmdPkgName-[0-9]" $SCA_SUSEDATA_PATH/rpms-$os.txt 2>/dev/null | tail -1 | sed "s/\.rpm$//" | sed "s/\.noarch$//" | sed "s/\.${arch}$//"`
 			if ! ls $SCA_SUSEDATA_PATH/rpms-"$os".txt >/dev/null 2>&1; then
 				echo "                No current rpm version info for $cmdPkgName"
-				[ $outFile ] && echo "warning-cmds-pkg-status-$cmdPkg: no-info" >> $outFile
+				[ $outFile ] && echo "warning-cmds-pkg-status-$cmdPkg: error" >> $outFile
 				errorState="TRUE"
 				continue
 			fi

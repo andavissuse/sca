@@ -1,14 +1,13 @@
 #!/bin/sh
 
 #
-# This is the sca script that outputs L0-related information
-# such as supportability, hardware certs, existence of srs, etc.
+# This is the main sca-L0 script that outputs L0-related information.
 # Default path for datasets is ../datasets and default path for
 # susedata is ../susedata, but these may be overridden with
 # optional arguments.
 #
-# Inputs: (optional with -c) parameters-to-check (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs)
-# Inputs: (optional with -p) path to datasets
+# Inputs: (optional with -c) categories-to-check (defined in sca-L0*.conf files)
+# 	  (optional with -p) path to datasets
 #	  (optional with -s) path to susedata
 #	  (optional w/ -t) tmp path (for uncompressing supportconfig)
 #         (optional with -o) output file for terse report (in addition to stdout)
@@ -24,7 +23,7 @@ function usage() {
 	echo "Usage: `basename $0` [-d(ebug)]"
 	echo "                 [-v(ersion)]"
 	echo "                 [-c(ategories) - comma-separated list of categories to check (default checks all)]"
-	echo "                     categories: os system kernel kmods warning-cmds error-cmds srs bugs" 
+	echo "                     categories: $1" 
 	echo "                 [-p datasets-path]"
 	echo "                 [-s susedata-path]"
 	echo "                 [-t tmp-path]"
@@ -55,10 +54,10 @@ function untarAndCheck() {
 function extractScInfo() {
 	echo ">>> Extracting info from supportconfig..."
 
-	for dataType in $SCA_ALL_DATATYPES; do
+	for dataType in $allDatatypes; do
 		[ $DEBUG ] && echo "*** DEBUG: $0: dataType: $dataType" >&2
-		[ $DEBUG ] && "$SCA_BIN_PATH"/"$dataType".sh "$debugOpt" "$tmpDir" > "$tmpDir"/"$dataType".tmp
-		[ ! $DEBUG ] && "$SCA_BIN_PATH"/"$dataType".sh "$tmpDir" > "$tmpDir"/"$dataType".tmp
+		[ $DEBUG ] && "$binPath"/"$dataType".sh "$debugOpt" "$tmpDir" > "$tmpDir"/"$dataType".tmp
+		[ ! $DEBUG ] && "$binPath"/"$dataType".sh "$tmpDir" > "$tmpDir"/"$dataType".tmp
 	done
 }
 
@@ -66,8 +65,8 @@ function osOtherInfo() {
 	echo ">>> Determining equivalent/related OS info..."
 
 	os=`cat "$tmpDir"/os.tmp`
-	"$SCA_BIN_PATH"/os-other.sh "$os" equiv > "$tmpDir"/os-equiv.tmp
-	"$SCA_BIN_PATH"/os-other.sh "$os" related > "$tmpDir"/os-related.tmp
+	"$binPath"/os-other.sh "$os" equiv > "$tmpDir"/os-equiv.tmp
+	"$binPath"/os-other.sh "$os" related > "$tmpDir"/os-related.tmp
 }
 
 function supportconfigDate() {
@@ -82,16 +81,43 @@ function supportconfigDate() {
 # main routine
 #
 
+# conf files
+curPath=`dirname "$(realpath "$0")"`
+mainConfFile="/usr/etc/sca-L0.conf"
+extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+if [ ! -r "$mainConfFile" ]; then
+	mainConfFile="/etc/sca-L0.conf"
+	extraConfFiles=`find /etc -name "sca-L0?.conf"`
+	if [ ! -r "$mainConfFile" ]; then
+		mainConfFile="$curPath/../sca-L0.conf"
+		extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+		if [ ! -r "$mainConfFile" ]; then
+			exitError "No sca-L0 conf file info; exiting..."
+		fi
+	fi
+fi
+source $mainConfFile
+for extraConfFile in $extraConfFiles; do
+	source ${extraConfFile}
+done
+scaHome="$SCA_HOME"
+allCategories="$SCA_CHECK_CATEGORIES"
+allDatatypes=`echo "$SCA_ALL_DATATYPES" | xargs -n1 | sort -u | xargs`
+binPath="$SCA_BIN_PATH"
+datasetsPath="$SCA_DATASETS_PATH"
+susedataPath="$SCA_SUSEDATA_PATH"
+tmpPath="$SCA_TMP_PATH"
+categories="$allCategories"
+
 # arguments
 if [ "$1" = "--help" ]; then
-	usage
-
+	usage "$allCategories"
 	exit 0
 fi
 while getopts 'hdvc:p:s:t:o:' OPTION; do
         case $OPTION in
                 h)
-                        usage
+                        usage "$allCategories"
 			exit 0
                         ;;
                 d)
@@ -141,43 +167,21 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 done
 shift $((OPTIND - 1))
 if [ ! $VERSION_ARG ] && [ ! "$1" ]; then
-        usage
+        usage "$allCategories"
         exit 1
 else
 	scTar="$1"
 fi
 
-#
-# conf file
-#
-curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-	exitError "No sca-L0.conf file info; exiting..."
-fi
-
-#
-# set variables (command-line opts override conf file)
-#
-[ -z "$categories" ] && categories="$SCA_CHECK_CATEGORIES"
-[ -z "$datasetsPath" ] && datasetsPath="$SCA_DATASETS_PATH"
-[ -z "$susedataPath" ] && susedataPath="$SCA_SUSEDATA_PATH"
-[ -z "$tmpPath" ] && tmpPath="$SCA_TMP_PATH"
-
-[ $DEBUG ] && echo "*** DEBUG: $0: SCA_HOME: $SCA_HOME" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: SCA_BIN_PATH: $SCA_BIN_PATH" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: scaHome: $scaHome" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: datasetsPath: $datasetsPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: tmpPath: $tmpPath" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scTar: $scTar" >&2
 
-scaVer=`cat $SCA_HOME/sca-L0.version`
+scaVer=`cat $scaHome/version`
 if [ ! -z "$VERSION_ARG" ]; then
 	echo $scaVer
 	exit 0
@@ -194,89 +198,19 @@ echo ">>> sca-L0 timestamp: $ts"
 # report sca-L0 version and default parameters to check
 echo ">>> sca-L0 version: $scaVer"
 [ $outFile ] && echo "sca-l0-version: $scaVer" >> $outFile
-[ $outFile ] && echo "sca-l0-default-checks: $SCA_CHECK_CATEGORIES" >> $outFile
+[ $outFile ] && echo "sca-l0-default-checks: $allCategories" >> $outFile
 
-# these steps are always executed (regardless of parameter arguments)
+# these steps are always executed (regardless of categories)
 untarAndCheck
 supportconfigDate
 extractScInfo
 osOtherInfo
 
-# OS version supportability
-if echo "$categories" | grep -q -E "^os$|^os | os | os$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/os-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "os: NA" >> $outFile
-	[ $outFile ] && echo "os-support: NA" >> $outFile
-	[ $outFile ] && echo "os-result: NA" >> $outFile
-fi
-
-# system info (incl. nearest neighbor to find hardware certs)
-if echo "$categories" | grep -q -E "^system$|^system | system | system$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/system-info.sh "$tmpDir" "$outFile"
-else
-        [ $outFile ] && echo "system: NA" >> $outFile
-        [ $outFile ] && echo "system-certs: NA" >> $outFile
-	[ $outFile ] && echo "system-result: NA" >> $outFile
-fi
-
-# kernel
-if echo "$categories" | grep -q -E "^kernel$|^kernel | kernel | kernel$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/kernel-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "kernel: NA" >> $outFile
-	[ $outFile ] && echo "kernel-status: NA" >> $outFile
-	[ $outFile ] && echo "kernel-result: NA" >> $outFile
-fi
-
-# kernel modules
-if echo "$categories" | grep -q -E "^kmods$|^kmods | kmods | kmods$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/kmods-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/kmods-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "kmods-externally-supported: NA" >> $outFile
-	[ $outFile ] && echo "kmods-unsupported: NA" >> $outFile
-	[ $outFile ] && echo "kmods-result: NA" >> $outFile
-fi
-
-# warning message commands
-if echo "$categories" | grep -q -E "^warning-cmds$|^warning-cmds | warning-cmds | warning-cmds$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/warning-cmds-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/warning-cmds-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "warning-cmds: NA" >> $outFile
-	[ $outFile ] && echo "warning-cmds-result: NA" >> $outFile
-fi
-
-# error message commands
-if echo "$categories" | grep -q -E "^error-cmds$|^error-cmds | error-cmds | error-cmds$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/error-cmds-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/error-cmds-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "error-cmds: NA" >> $outFile
-	[ $outFile ] && echo "error-cmds-result: NA" >> $outFile
-fi
-
-# predicting SRs
-if echo "$categories" | grep -q -E "^srs$|^srs | srs | srs$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/srs-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/srs-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "srs: NA" >> $outFile
-	[ $outFile ] && echo "srs-result: NA" >> $outFile
-fi
-
-# predicting bugs
-if  echo "$categories" | grep -q -E "^bugs$|^bugs | bugs | bugs$"; then
-	[ $DEBUG ] && $SCA_BIN_PATH/bugs-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $SCA_BIN_PATH/bugs-info.sh "$tmpDir" "$outFile"
-else
-	[ $outFile ] && echo "bugs: NA" >> $outFile
-	[ $outFile ] && echo "bugs-result: NA" >> $outFile
-fi
-
+# check categories
+for category in $categories; do
+	[ $DEBUG ] && $binPath/$category-info.sh "$debugOpt" "$tmpDir" "$outFile"
+	[ ! $DEBUG ] && $binPath/$category-info.sh "$tmpDir" "$outFile"
+done
 rm -rf $tmpDir
+
 exit 0

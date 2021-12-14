@@ -46,25 +46,29 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: featuresPath: $featuresPath" >&2
 
-# config file
+# conf files
 curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-        echo "No sca-L0.conf file info; exiting..." >&2
-	[ $outFile ] && echo "bugs: error" >> $outFile
-	[ $outFile ] && echo "bugs-result: error" >> $outFile
-	exit 1
+mainConfFile="/usr/etc/sca-L0.conf"
+extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+if [ ! -r "$mainConfFile" ]; then
+        mainConfFile="/etc/sca-L0.conf"
+        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        if [ ! -r "$mainConfFile" ]; then
+                mainConfFile="$curPath/../sca-L0.conf"
+                extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+                if [ ! -r "$mainConfFile" ]; then
+                        exitError "No sca-L0 conf file info; exiting..."
+                fi
+        fi
 fi
+source $mainConfFile
+for extraConfFile in $extraConfFiles; do
+        source ${extraConfFile}
+done
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
-datasetsPathPrivate="$SCA_DATASETS_PATH_PRIVATE"
 bugsDataTypes="$SCA_BUGS_DATATYPES"
-[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, datasetsPathPrivate: $datasetsPathPrivate, bugsDataTypes: $bugsDataTypes" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, bugsDataTypes: $bugsDataTypes" >&2
 
 # start
 echo ">>> Checking bugs..."
@@ -85,7 +89,7 @@ fi
 
 dataTypes=""
 for dataType in $bugsDataTypes; do
-	if [ -s "$featuresPath"/"$dataType".tmp ] && [ -r "$datasetsPath/$dataType.dat" ]; then
+	if [ -s "$featuresPath"/"$dataType".tmp ] && [ -r "$datasetsPath/$dataType.pkl" ]; then
 		dataTypes="$dataTypes $dataType"
 	fi
 done
@@ -108,11 +112,11 @@ for dataType in $dataTypes; do
 #       eval weight=$weightVar
         weight="1"
         [ $DEBUG ] && echo "*** DEBUG: $0: metricVar: $metricVar, radiusVar: $radiusVar, weightVar: $weightVar" >&2
-        datasetArg="$datasetsPath/$dataType.dat $featuresPath/$dataType.tmp $metric $radius $weight"
+        datasetArg="$datasetsPath/$dataType.pkl $featuresPath/$dataType.tmp $metric $radius $weight"
         [ $DEBUG ] && echo "*** DEBUG: $0: datasetArg: $datasetArg" >&2
         knnCombinedArgs="$knnCombinedArgs $datasetArg"
 done
-knnCombinedArgs="$knnCombinedArgs $datasetsPath/os.dat $featuresPath/os.tmp jaccard 0 1"
+knnCombinedArgs="$knnCombinedArgs $datasetsPath/os.pkl $featuresPath/os.tmp jaccard 0 1"
 knnCombinedArgs=`echo $knnCombinedArgs | sed "s/^ //"`
 [ $DEBUG ] && echo "*** DEBUG: $0: knnCombinedArgs: $knnCombinedArgs" >&2
 if [ -z "$knnCombinedArgs" ]; then
@@ -125,7 +129,7 @@ fi
 if [ "$DEBUG" ]; then
         idsScores=`python3 $binPath/knn_combined.py -d $knnCombinedArgs`
 else
-        idsScores=`python3 $binPath/knn_combined.py $knnCombinedArgs`
+        idsScores=`python3 $binPath/knn_combined.py $knnCombinedArgs 2>/dev/null`
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores" >&2
 
@@ -142,14 +146,6 @@ else
                 scores="$scores ${idsScoresArray[(($i+1))]}"
                 i=$((i + 2))
         done
-        realBugs=""
-        if [ -r "$datasetsPathPrivate/bugs-hash.dat" ]; then
-                for bug in $bugs; do
-                        realBug=`grep "$bug" "$datasetsPathPrivate/bugs-hash.dat" | cut -d' ' -f1`
-                        realBugs="$realBugs $realBug"
-                done
-                bugs="$realBugs"
-        fi
 
         [ $outFile ] && echo "bugs: $bugs" >> "$outFile"
         i=1

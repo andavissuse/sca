@@ -46,21 +46,25 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
 	exit 1
 fi
 
-# config file
+# conf files
 curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-        echo "No sca-L0.conf file info; exiting..." >&2
-	[ $outFile ] && echo "kernel: error" >> $outFile
-	[ $outFile ] && echo "kernel-status: error" >> $outFile
-	[ $outFile ] && echo "kernel-result: error" >> $outFile
-	exit 1
+mainConfFile="/usr/etc/sca-L0.conf"
+extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+if [ ! -r "$mainConfFile" ]; then
+        mainConfFile="/etc/sca-L0.conf"
+        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        if [ ! -r "$mainConfFile" ]; then
+                mainConfFile="$curPath/../sca-L0.conf"
+                extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+                if [ ! -r "$mainConfFile" ]; then
+                        exitError "No sca-L0 conf file info; exiting..."
+                fi
+        fi
 fi
+source $mainConfFile
+for extraConfFile in $extraConfFiles; do
+        source ${extraConfFile}
+done
 binPath="$SCA_BIN_PATH"
 susedataPath="$SCA_SUSEDATA_PATH"
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, susedataPath: $susedataPath" >&2
@@ -111,7 +115,7 @@ flavor=`echo $kern | sed "s/$kVer-//"`
 kPkg="kernel-${flavor}-${kVer}"
 if [ ! -f "$SCA_SUSEDATA_PATH/rpms-$os.txt" ]; then
 	echo "            No current kernel-${flavor} rpm info for $os"
-	[ $outFile ] && echo "kernel-status: no-info" >> $outFile
+	[ $outFile ] && echo "kernel-status: error" >> $outFile
 	[ $outFile ] && echo "kernel-result: 0" >> $outFile
 	exit 1
 fi
