@@ -181,7 +181,7 @@ fi
 [ $DEBUG ] && echo "*** DEBUG: $0: tmpPath: $tmpPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scTar: $scTar" >&2
 
-scaVer=`cat $scaHome/version`
+scaVer=`cat $scaHome/sca-L0.version`
 if [ ! -z "$VERSION_ARG" ]; then
 	echo $scaVer
 	exit 0
