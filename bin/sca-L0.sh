@@ -20,16 +20,17 @@
 # functions
 #
 function usage() {
-	echo "Usage: `basename $0` [-d(ebug)]"
-	echo "                 [-v(ersion)]"
-	echo "                 [-c(ategories) - comma-separated list of categories to check (default checks all)]"
+	echo "Usage: `basename $0` [options] <supportconfig-tarfile>"
+	echo "Options:"
+	echo "    -d        debug"
+	echo "    -v        version"
+	echo "    -c        categories - comma-separated list of categories to check (default checks all)"
 	echo "                     categories: $1" 
-	echo "                 [-p datasets-path]"
-	echo "                 [-s susedata-path]"
-	echo "                 [-t tmp-path]"
-	echo "                 [-o outfile (short-form output)]"
-	echo "                 supportconfig-tarfile"
-	echo "                 Example: sca-L0.sh -c os,srs -o /tmp/sca-L0.out /var/log/supportconfig.tgz"
+	echo "    -p        datasets-path (default is /opt/suse/sca/datasets)"
+	echo "    -s        susedata-path (default is /opt/suse/sca/susedata)"
+	echo "    -t        tmp-path (default is /tmp)"
+	echo "    -o        file for short-form name:value output"
+	echo "Example: sca-L0.sh -c os,system -o /tmp/sca-L0.out /var/log/supportconfig.tgz"
 }
 
 function exitError() {
@@ -151,13 +152,14 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 		o)
 			outFile="$OPTARG"
 			if [ -f "$outFile" ]; then
-				echo "Short-form output file $outFile already exists, overwrite (y/N)? "
-				read reply
-				if [ "$reply" = "y" ]; then
-					rm $outFile
-				else	
-					exitError "Exiting..."
-				fi
+#				echo "Short-form output file $outFile already exists, overwrite (y/N)? "
+#				read reply
+#				if [ "$reply" = "y" ]; then
+#					rm $outFile
+#				else	
+#					exitError "Exiting..."
+#				fi
+				exitError "Short-form output file already exists, exiting..."
 			fi
 			if [ ! -d `dirname "$outFile"` ]; then
 				exitError "Short-form output file path `dirname $outFile` does not exist, exiting..."
