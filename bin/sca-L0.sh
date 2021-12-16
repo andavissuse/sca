@@ -101,7 +101,7 @@ for extraConfFile in $extraConfFiles; do
 	source ${extraConfFile}
 done
 scaHome="$SCA_HOME"
-allCategories="$SCA_CHECK_CATEGORIES"
+allCategories="$SCA_CATEGORIES"
 allDatatypes=`echo "$SCA_ALL_DATATYPES" | xargs -n1 | sort -u | xargs`
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
@@ -207,9 +207,20 @@ extractScInfo
 osOtherInfo
 
 # check categories
-for category in $categories; do
-	[ $DEBUG ] && $binPath/$category-info.sh "$debugOpt" "$tmpDir" "$outFile"
-	[ ! $DEBUG ] && $binPath/$category-info.sh "$tmpDir" "$outFile"
+[ $DEBUG ] && echo "*** DEBUG: $0: allCategories: $allCategories" >&2
+for category in $allCategories; do
+	[ $DEBUG ] && echo "*** DEBUG: $0: category: $category" >&2
+	if echo $categories | grep -q $category; then
+		[ $DEBUG ] && $binPath/$category-info.sh "$debugOpt" "$tmpDir" "$outFile"
+		[ ! $DEBUG ] && $binPath/$category-info.sh "$tmpDir" "$outFile"
+	else
+		categoryUpper=`echo $category | tr '[:lower:]' '[:upper:]' | tr '-' '_'`
+		tags="SCA_${categoryUpper}_TAGS"
+		for tag in ${!tags}; do
+			[ $DEBUG ] && echo "*** DEBUG: $0: tag: $tag" >&2
+			[ $outFile ] && echo "$tag: NA" >> $outFile
+		done
+	fi
 done
 rm -rf $tmpDir
 
