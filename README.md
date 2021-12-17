@@ -1,43 +1,43 @@
 # sca-L0
-Utility for doing Level-0 analysis on supportconfigs (top-level executable is sca-L0.sh).  Directly reports some info; for other info, performs nearest-neighbor analysis to find similar supportconfigs from YES certifications, SRs, and bugs.  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
+Utility for doing Level-0 analysis on supportconfigs (top-level executable is sca-L0.sh).  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
 # Structure
 
-## sca-L0.conf 
+## sca-L0.conf, sca-L0+.conf
 Config file containing variables (e.g., paths, datatypes) for use by scripts
 
 ## bin directory
-bash and python scripts to analyze supportconfigs
+Scripts to analyze supportconfigs
 
 # Instructions
 
 ## Analyzing a supportconfig
 Prerequisites:
-* datasets and susedata files in the directories specified in sca-L0.conf
+* susedata files in the directories specified in sca-L0.conf
+* Optional, only required for analyzing srs and bugs:  datasets in the directories specified in sca-L0+.conf
 
 To analyze a supportconfig:
 * Run `sca-L0.sh <supportconfig-tarball>`.  This will:
   * uncompress the supportconfig
   * extract data/features
-  * report some information (e.g., OS version, support status, etc.) directly
-  * Vectorize other features then perform nearest-neighbor analysis to find similar supportconfigs and related SRs/bugs/certs)
+  * report information (e.g., OS version, support status, etc.)
 
 # sca-L0 results
-By default (if invoked w/o -c option), sca-L0 outputs information for all categories (os, system, kernel, kmods, warning-cmds, error-cmds, srs, bugs) to stdout.
+By default (if invoked w/o -c option), sca-L0 outputs information for all categories to stdout.  Default categories are os, system, kernel, kmods, warning-cmds, error-cmds.  Optional (sca-L0+) categories are srs, bugs.
 
 The "-c" option can be used to restrict checks/output to specific categories.
 
-The "-o" option writes short-form output (name-value pairs) to the file specified, along with an overall "good/bad/need-more-info" result for each category.  Results are determined as follows:
+The "-o" option writes short-form output (name-value pairs) to the file specified, along with an overall "1 (good)/-1 (bad)/0 (need-more-info)" result for each category.  Results are determined as follows:
 
-Note: Any situation where sca-L0 does not/cannot determine category info will cause an "undetermined (0)" result. 
+Note: Any error situation will give a "0 (need-more-info)" result. 
 ## os
 * good (1):		OS version is supported (no LTSS or other custom support contract required)
 * bad (-1):		OS version is out-of-support (not covered by general or LTSS support)
-* need-more-info (0):	OS version is supported with special contract or any other result
+* need-more-info (0):	OS version is supported with special contract
 
 ## system
 * good (1):		YES Certifications exist for system model
-* bad (-1):		No YES Certification exist for system model
+* bad (-1):		No YES Certifications exist for system model
 * need-more-info (0):	Any other result
 
 ## kernel
@@ -58,14 +58,4 @@ Note: Any situation where sca-L0 does not/cannot determine category info will ca
 ## error-cmds
 * good (1):		No error messages found in logs
 * bad (-1):		Error messages found in logs
-* need-more-info (0):	Any other result
-
-## srs
-* good (1):		No SRs found	
-* bad (-1):		sca-L0 found one-or-more SRs w/ greater than 80% match 
-* need-more-info (0):	Any other result
-
-## bugs
-* good (1):		No bugs found
-* bad (-1):		sca-L0 found one or more bugs w/ greater than 80% match
 * need-more-info (0):	Any other result
