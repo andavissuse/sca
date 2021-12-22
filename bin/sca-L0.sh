@@ -85,13 +85,13 @@ function supportconfigDate() {
 # conf files
 curPath=`dirname "$(realpath "$0")"`
 mainConfFile="/usr/etc/sca-L0.conf"
-extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+extraConfFiles=`find /usr/etc -maxdepth 1 -name "sca-L0?.conf"`
 if [ ! -r "$mainConfFile" ]; then
 	mainConfFile="/etc/sca-L0.conf"
-	extraConfFiles=`find /etc -name "sca-L0?.conf"`
+	extraConfFiles=`find /etc -maxdepth 1 -name "sca-L0?.conf"`
 	if [ ! -r "$mainConfFile" ]; then
 		mainConfFile="$curPath/../sca-L0.conf"
-		extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
+		extraConfFiles=`find $curPath/.. -maxdepth 1 -name "sca-L0?.conf"`
 		if [ ! -r "$mainConfFile" ]; then
 			exitError "No sca-L0 conf file info; exiting..."
 		fi
@@ -175,8 +175,11 @@ else
 	scTar="$1"
 fi
 
+[ $DEBUG ] && echo "*** DEBUG: $0: mainConfFile: $mainConfFile" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: extraConfFiles: $extraConfFiles" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scaHome: $scaHome" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: allCategories: $allCategories" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: datasetsPath: $datasetsPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: susedataPath: $susedataPath" >&2
