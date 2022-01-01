@@ -68,28 +68,15 @@ done
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
 bugsDataTypes="$SCA_BUGS_DATATYPES"
-[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, bugsDataTypes: $bugsDataTypes" >&2
+bugsRadius="$SCA_BUGS_RADIUS"
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, bugsDataTypes: $bugsDataTypes, bugsRadius: $bugsRadius" >&2
 
 # start
 echo ">>> Checking bugs..."
 
-os=`cat $featuresPath/os.tmp`
-[ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
-if [ -z "$os" ]; then
-	echo "        Error retrieving OS info"
-	[ $outFile ] && echo "bugs: error" >> $outFile
-        [ $outFile ] && echo "bugs-result: 0" >> $outFile
-        exit 1
-fi
-osEquiv=`"$binPath"/os-other.sh "$os" equiv`
-[ $DEBUG ] && echo "*** DEBUG: $0: osEquiv: $osEquiv" >&2
-if [ ! -z "$osEquiv" ]; then
-	os="$osEquiv"
-fi
-
 dataTypes=""
 for dataType in $bugsDataTypes; do
-	if [ -s "$featuresPath"/"$dataType".tmp ] && [ -r "$datasetsPath/$dataType.pkl" ]; then
+	if [ -s "$featuresPath/$dataType.tmp" ] && [ -r "$datasetsPath/$dataType.pkl" ]; then
 		dataTypes="$dataTypes $dataType"
 	fi
 done
@@ -104,58 +91,57 @@ fi
 # build datasets argument to pass to knn_combined
 knnCombinedArgs="$datasetsPath/bugs.dat"
 for dataType in $dataTypes; do
-#       metricVar='$'`echo SCA_BUGS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
-#       eval metric=$metricVar
-        metric="jaccard"
-        radius="0.2"
-#       weightVar='$'`echo SCA_BUGS_"${dataType^^}"_WEIGHT | sed "s/-/_/g"`
-#       eval weight=$weightVar
-        weight="1"
-        [ $DEBUG ] && echo "*** DEBUG: $0: metricVar: $metricVar, radiusVar: $radiusVar, weightVar: $weightVar" >&2
-        datasetArg="$datasetsPath/$dataType.pkl $featuresPath/$dataType.tmp $metric $radius $weight"
-        [ $DEBUG ] && echo "*** DEBUG: $0: datasetArg: $datasetArg" >&2
-        knnCombinedArgs="$knnCombinedArgs $datasetArg"
+#	metricVar='$'`echo SCA_BUGS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
+#	eval metric=$metricVar
+	metric="jaccard"
+	radius="$bugsRadius"
+#	weightVar='$'`echo SCA_BUGS_"${dataType^^}"_WEIGHT | sed "s/-/_/g"`
+#	eval weight=$weightVar
+	weight="1"
+	[ $DEBUG ] && echo "*** DEBUG: $0: metricVar: $metricVar, radiusVar: $radiusVar, weightVar: $weightVar" >&2
+	datasetArg="$datasetsPath/$dataType.pkl $featuresPath/$dataType.tmp $metric $radius $weight"
+	[ $DEBUG ] && echo "*** DEBUG: $0: datasetArg: $datasetArg" >&2
+	knnCombinedArgs="$knnCombinedArgs $datasetArg"
 done
-knnCombinedArgs="$knnCombinedArgs $datasetsPath/os.pkl $featuresPath/os.tmp jaccard 0 1"
 knnCombinedArgs=`echo $knnCombinedArgs | sed "s/^ //"`
 [ $DEBUG ] && echo "*** DEBUG: $0: knnCombinedArgs: $knnCombinedArgs" >&2
 if [ -z "$knnCombinedArgs" ]; then
-        echo "        Error retrieving bugs"
-        [ $outFile ] && echo "bugs: error" >> $outFile
-        [ $outFile ] && echo "bugs-result: 0" >> $outFile
-        exit 1
+	echo "        Error retrieving bugs"
+	[ $outFile ] && echo "bugs: error" >> $outFile
+	[ $outFile ] && echo "bugs-result: 0" >> $outFile
+	exit 1
 fi
 
 if [ "$DEBUG" ]; then
-        idsScores=`python3 $binPath/knn_combined.py -d $knnCombinedArgs`
+	idsScores=`python3 $binPath/knn_combined.py -d $knnCombinedArgs`
 else
-        idsScores=`python3 $binPath/knn_combined.py $knnCombinedArgs 2>/dev/null`
+	idsScores=`python3 $binPath/knn_combined.py $knnCombinedArgs 2>/dev/null`
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores" >&2
 
-declare -a idsScoresArray=(`echo $idsScores | tr -d "[],'"`)
+declare -a idsScoresArray=(`echo $idsScores | tr "[()',]" " "`)
+[ $DEBUG ] && echo "*** DEBUG: $0: idsScoresArray: $idsScoresArray" >&2
 if [ -z "$idsScoresArray" ]; then
-        echo "        Bugs: none"
-        [ $outFile ] && echo "bugs: none" >> $outFile
-        [ $outFile ] && echo "bugs-result: 1" >> $outFile
+	echo "        Bugs: none"
+	[ $outFile ] && echo "bugs: none" >> $outFile
+	[ $outFile ] && echo "bugs-result: 1" >> $outFile
 else
-        i=0
-        bugs=""
-        while [ ! -z "${idsScoresArray[i]}" ]; do
-                bugs="$bugs ${idsScoresArray[i]}"
-                scores="$scores ${idsScoresArray[(($i+1))]}"
-                i=$((i + 2))
-        done
-
-        [ $outFile ] && echo "bugs: $bugs" >> "$outFile"
-        i=1
-        for bug in $bugs; do
-                score=`echo $scores | cut -d' ' -f$i`
-                echo "        Bug: $bug, Score: $score"
-                [ $outFile ] && echo "bugs-score-$bug: $score" >> "$outFile"
-                i=$((i + 1))
-        done
-        [ $outFile ] && echo "bugs-result: -1" >> "$outFile"
+	i=0
+	bugs=""
+	while [ ! -z "${idsScoresArray[i]}" ]; do
+		bugs="$bugs ${idsScoresArray[i]}"
+		scores="$scores ${idsScoresArray[(($i+1))]}"
+		i=$((i + 2))
+	done
+	[ $outFile ] && echo "bugs: $bugs" >> "$outFile"
+	i=1
+	for bug in $bugs; do
+		score=`echo $scores | cut -d' ' -f$i`
+		echo "        Bug: $bug, Score: $score"
+		[ $outFile ] && echo "bugs-score-$bug: $score" >> "$outFile"
+		i=$((i + 1))
+	done
+	[ $outFile ] && echo "bugs-result: -1" >> "$outFile"
 fi
 
 exit 0

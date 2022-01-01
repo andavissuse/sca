@@ -73,40 +73,66 @@ def main(argv):
         print("*** DEBUG: " + sys.argv[0] + ": weights:", weights, file=sys.stderr)
 
     # get nearest neighbor results from each dataset, put into pandas arrays
-    dfs_nns = []
+    df_total_nns = pd.DataFrame() 
     for dataset_num in range(len(dataset_files)):
         if DEBUG == "TRUE":
             print("*** DEBUG: " + sys.argv[0] + ": dataset_num:", dataset_num, file=sys.stderr)
-        if DEBUG == "TRUE":
             knn_args = "-d " + class_file + " " + dataset_files[dataset_num] + " " + feature_files[dataset_num] + " " + dist_metrics[dataset_num] + " " + radii[dataset_num]
+            print("*** DEBUG: " + sys.argv[0] + ": knn_args:", knn_args, file=sys.stderr)
         else:
             knn_args = class_file + " " + dataset_files[dataset_num] + " " + feature_files[dataset_num] + " " + dist_metrics[dataset_num] + " " + radii[dataset_num]
+        df_knn_result = knn.main(knn_args.split())
+#        df_knn_result.columns = df_knn_result.iloc[0]
         if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": knn_args:", knn_args, file=sys.stderr)
-        dfs_nns.append(knn.main(knn_args.split()))
-        if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": dfs_nns[dataset_num]:", dfs_nns[dataset_num], file=sys.stderr)
+            print("*** DEBUG: " + sys.argv[0] + ": df_knn_result:", df_knn_result, file=sys.stderr)
+        df_total_nns = df_total_nns.append(df_knn_result)
+    if DEBUG == "TRUE":
+        print("*** DEBUG: " + sys.argv[0] + ": df_total_nns:", df_total_nns, file=sys.stderr)
 
     # inner-join all results
 #    df_merged = reduce(lambda left,right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_nns)
-    df_merged = dfs_nns[0]
-    for dataset_num in range(len(dataset_files) - 1):
-        dfs_to_merge = [df_merged, dfs_nns[dataset_num + 1]]
-        df_merged = reduce(lambda left, right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_to_merge)
-        df_merged['Score'] = df_merged['Score_x'] + df_merged['Score_y']
-        df_merged.drop(columns=['Score_x', 'Score_y'], inplace=True)
-        if DEBUG == "TRUE":
-            print("*** DEBUG: " + sys.argv[0] + ": df_merged:", df_merged, file=sys.stderr)
-    aggregation_functions = {'Score': 'sum'}
-    df_scored = df_merged.groupby(df_merged['Id']).aggregate(aggregation_functions)
-    df_scored['Score'] = df_scored['Score'].div(len(dataset_files)).round(2)
-    df_scored = df_scored.sort_values(by=['Score'], ascending=False)
+#    df_merged = dfs_nns[0]
+#    for dataset_num in range(len(dataset_files) - 1):
+#        dfs_to_merge = [df_merged, dfs_nns[dataset_num + 1]]
+#        df_merged = reduce(lambda left, right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_to_merge)
+#        df_merged['Score'] = df_merged['Score_x'] + df_merged['Score_y']
+#        df_merged.drop(columns=['Score_x', 'Score_y'], inplace=True)
+#        if DEBUG == "TRUE":
+#            print("*** DEBUG: " + sys.argv[0] + ": df_merged:", df_merged, file=sys.stderr)
+#    aggregation_functions = {'Score': 'sum'}
+#    df_scored = df_merged.groupby(df_merged['Id']).aggregate(aggregation_functions)
+#    df_scored['Score'] = df_scored['Score'].div(len(dataset_files)).round(2)
+#    df_scored = df_scored.sort_values(by=['Score'], ascending=False)
+#    if DEBUG == "TRUE":
+#        print("*** DEBUG: " + sys.argv[0] + ": df_scored:", df_scored, file=sys.stderr)
+#    scored_list = df_scored.reset_index().values.tolist()
+#    if DEBUG == "TRUE":
+#        print("*** DEBUG: " + sys.argv[0] + ": scored_list:", scored_list, file=sys.stderr)
+#    return(scored_list)
+
+#    dfs_nns = pd.DataFrame(list_nns, index='md5sum')
+#    if DEBUG == "TRUE":
+#        print("*** DEBUG: " + sys.argv[0] + ": dfs_nns:", dfs_nns, file=sys.stderr)
+    df_total_nns = df_total_nns.drop(columns=['md5sum'])
+    df_total_nns = df_total_nns.set_index('Id')
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": df_scored:", df_scored, file=sys.stderr)
-    scored_list = df_scored.reset_index().values.tolist()
+        print("*** DEBUG: " + sys.argv[0] + ": df_total_nns:", df_total_nns, file=sys.stderr)
+    df_total_nns = df_total_nns.groupby(['Id'])[['Score']].agg('sum')
     if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": scored_list:", scored_list, file=sys.stderr)
-    return(scored_list)
+        print("*** DEBUG: " + sys.argv[0] + ": df_total_nns after groupby:", df_total_nns, file=sys.stderr)
+    df_total_nns = df_total_nns.sort_values(by=['Score'], ascending=False)
+    if DEBUG == "TRUE":
+        print("*** DEBUG: " + sys.argv[0] + ": df_total_nns sorted:", df_total_nns, file=sys.stderr)
+    np_total_nns = df_total_nns.to_records()
+    if DEBUG == "TRUE":
+        print("*** DEBUG: " + sys.argv[0] + ": np_total_nns:", np_total_nns, file=sys.stderr)
+    list_total_nns = np_total_nns.tolist()
+    if DEBUG == "TRUE":
+        print("*** DEBUG: " + sys.argv[0] + ": list_total_nns:", list_total_nns, file=sys.stderr)
+
+
+#    return(list_total_nns_combined)
+    return(list_total_nns)
 
 if __name__ == "__main__":
     ret_val = main(sys.argv[1:])

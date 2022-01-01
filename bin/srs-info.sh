@@ -68,24 +68,11 @@ done
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
 srsDataTypes="$SCA_SRS_DATATYPES"
-[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, srsDataTypes: $srsDataTypes" >&2
+srsRadius="$SCA_SRS_RADIUS"
+[ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, datasetsPath: $datasetsPath, srsDataTypes: $srsDataTypes, srsRadius: $srsRadius" >&2
 
 # start
 echo ">>> Checking SRs..."
-
-os=`cat $featuresPath/os.tmp`
-[ $DEBUG ] && echo "*** DEBUG: $0: os: $os" >&2
-if [ -z "$os" ]; then
-	echo "        Error retrieving OS info"
-	[ $outFile ] && echo "srs: error" >> $outFile
-        [ $outFile ] && echo "srs-result: 0" >> $outFile
-        exit 1
-fi
-osEquiv=`$binPath/os-other.sh "$os" equiv`
-[ $DEBUG ] && echo "*** DEBUG: $0: osEquiv: $osEquiv" >&2
-if [ ! -z "$osEquiv" ]; then
-	os="$osEquiv"
-fi
 
 dataTypes=""
 for dataType in $srsDataTypes; do
@@ -107,7 +94,7 @@ for dataType in $dataTypes; do
 #	metricVar='$'`echo SCA_SRS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
 #	eval metric=$metricVar
 	metric="jaccard"
-	radius="0.2"
+	radius="$srsRadius"
 #	weightVar='$'`echo SCA_SRS_"${dataType^^}"_WEIGHT | sed "s/-/_/g"`
 #	eval weight=$weightVar
 	weight="1"
@@ -116,7 +103,6 @@ for dataType in $dataTypes; do
 	[ $DEBUG ] && echo "*** DEBUG: $0: datasetArg: $datasetArg" >&2
 	knnCombinedArgs="$knnCombinedArgs $datasetArg"
 done
-knnCombinedArgs="$knnCombinedArgs $datasetsPath/os.pkl $featuresPath/os.tmp jaccard 0 1"
 knnCombinedArgs=`echo $knnCombinedArgs | sed "s/^ //"`
 [ $DEBUG ] && echo "*** DEBUG: $0: knnCombinedArgs: $knnCombinedArgs" >&2
 if [ -z "$knnCombinedArgs" ]; then
@@ -133,7 +119,8 @@ else
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: idsScores: $idsScores" >&2
 
-declare -a idsScoresArray=(`echo $idsScores | tr -d "[],'"`)
+declare -a idsScoresArray=(`echo $idsScores | tr "[()',]" " "`)
+[ $DEBUG ] && echo "*** DEBUG: $0: idsScoresArray: $idsScoresArray" >&2
 if [ -z "$idsScoresArray" ]; then
 	echo "        SRs: none"
 	[ $outFile ] && echo "srs: none" >> $outFile
