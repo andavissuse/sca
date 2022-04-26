@@ -45,7 +45,7 @@ if [ ! -f $basicHealthFile ]; then
 	exit 1
 fi
 
-grep "supported=external" $basicHealthFile | while IFS= read -r line; do
+grep -E "supported=external" $basicHealthFile | while IFS= read -r line; do
 	module=`echo $line | cut -d" " -f1 | cut -d"=" -f2`
 	echo $module
 done

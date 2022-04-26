@@ -48,11 +48,11 @@ fi
 
 # conf files
 curPath=`dirname "$(realpath "$0")"`
-mainConfFile="/usr/etc/sca-L0.conf"
-extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+mainConfFile="/etc/sca-L0.conf"
+extraConfFiles=`find /etc -name "sca-L0?.conf"`
 if [ ! -r "$mainConfFile" ]; then
-        mainConfFile="/etc/sca-L0.conf"
-        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        mainConfFile="/usr/etc/sca-L0.conf"
+        extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
         if [ ! -r "$mainConfFile" ]; then
                 mainConfFile="$curPath/../sca-L0.conf"
                 extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
@@ -75,12 +75,15 @@ srsRadius="$SCA_SRS_RADIUS"
 echo ">>> Checking SRs..."
 
 dataTypes=""
+numDataTypes=0
 for dataType in $srsDataTypes; do
 	if [ -s "$featuresPath/$dataType.tmp" ] && [ -r "$datasetsPath/$dataType.pkl" ]; then
 		dataTypes="$dataTypes $dataType"
+		numDataTypes=$((numDataTypes + 1))
 	fi
 done
 [ $DEBUG ] && echo "*** DEBUG: $0: dataTypes: $dataTypes" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: numDataTypes: $numDataTypes" >&2
 if [ -z "$dataTypes" ]; then
 	echo "        No warning/error messages to compare against SRs"
 	[ $outFile ] && echo "srs: none" >> $outFile
@@ -133,15 +136,37 @@ else
 		scores="$scores ${idsScoresArray[(($i+1))]}"
 		i=$((i + 2))
 	done
-	[ $outFile ] && echo "srs: $srs" >> "$outFile"
-	i=1
+	srsToPrint=""
+	normalizedScores=""
+	i=0
 	for sr in $srs; do
-		score=`echo $scores | cut -d' ' -f$i`
-		echo "        SR: $sr, Score: $score"
-		[ $outFile ] && echo "srs-score-$sr: $score" >> "$outFile"
 		i=$((i + 1))
+		score=`echo $scores | cut -d' ' -f$i`
+		normalizedScore=`echo "scale=2 ; $score / $numDataTypes" | bc`
+		if (( $(echo "$normalizedScore <= .50" |bc -l) )); then
+			break
+		fi
+		srsToPrint="$srsToPrint $sr"
+		normalizedScores="$normalizedScores $normalizedScore"
+		[ $DEBUG ] && echo "*** DEBUG: $0: srsToPrint: $srsToPrint" >&2
+		[ $DEBUG ] && echo "*** DEBUG: $0: normalizedScores: $normalizedScores" >&2
 	done
-	[ $outFile ] && echo "srs-result: -1" >> "$outFile"
+	if [ -z "$srsToPrint" ]; then
+		echo "        SRs: none"
+		[ $outFile ] && echo "srs: none" >> "$outFile"
+		[ $outFile ] && echo "srs-result: 1" >> "$outFile"
+	else
+		[ $outFile ] && echo "srs: $srsToPrint" >> "$outFile"
+		i=0
+		for srToPrint in $srsToPrint; do
+			i=$((i + 1))
+			normalizedScore=`echo $normalizedScores | cut -d' ' -f$i`
+			echo "        SR: $srToPrint, Score: $normalizedScore"
+			[ $outFile ] && echo "srs-score-$srToPrint: $normalizedScore" >> "$outFile"
+		done
+		[ $outFile ] && echo "srs-result: -1" >> "$outFile"
+	fi
 fi
 
 exit 0
+

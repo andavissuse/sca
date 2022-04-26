@@ -84,11 +84,11 @@ function supportconfigDate() {
 
 # conf files
 curPath=`dirname "$(realpath "$0")"`
-mainConfFile="/usr/etc/sca-L0.conf"
-extraConfFiles=`find /usr/etc -maxdepth 1 -name "sca-L0?.conf"`
+mainConfFile="/etc/sca-L0.conf"
+extraConfFiles=`find /etc -maxdepth 1 -name "sca-L0?.conf"`
 if [ ! -r "$mainConfFile" ]; then
-	mainConfFile="/etc/sca-L0.conf"
-	extraConfFiles=`find /etc -maxdepth 1 -name "sca-L0?.conf"`
+	mainConfFile="/usr/etc/sca-L0.conf"
+	extraConfFiles=`find /usr/etc -maxdepth 1 -name "sca-L0?.conf"`
 	if [ ! -r "$mainConfFile" ]; then
 		mainConfFile="$curPath/../sca-L0.conf"
 		extraConfFiles=`find $curPath/.. -maxdepth 1 -name "sca-L0?.conf"`
@@ -103,7 +103,7 @@ for extraConfFile in $extraConfFiles; do
 done
 scaHome="$SCA_HOME"
 allCategories="$SCA_CATEGORIES"
-allDatatypes=`echo "$SCA_ALL_DATATYPES" | xargs -n1 | sort -u | xargs`
+allDatatypes=`echo "$SCA_DATATYPES" | xargs -n1 | sort -u | xargs`
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
 susedataPath="$SCA_SUSEDATA_PATH"

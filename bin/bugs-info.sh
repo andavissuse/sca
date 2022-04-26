@@ -48,11 +48,11 @@ fi
 
 # conf files
 curPath=`dirname "$(realpath "$0")"`
-mainConfFile="/usr/etc/sca-L0.conf"
-extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
+mainConfFile="/etc/sca-L0.conf"
+extraConfFiles=`find /etc -name "sca-L0?.conf"`
 if [ ! -r "$mainConfFile" ]; then
-        mainConfFile="/etc/sca-L0.conf"
-        extraConfFiles=`find /etc -name "sca-L0?.conf"`
+        mainConfFile="/usr/etc/sca-L0.conf"
+        extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
         if [ ! -r "$mainConfFile" ]; then
                 mainConfFile="$curPath/../sca-L0.conf"
                 extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
@@ -75,12 +75,15 @@ bugsRadius="$SCA_BUGS_RADIUS"
 echo ">>> Checking bugs..."
 
 dataTypes=""
+numDataTypes=0
 for dataType in $bugsDataTypes; do
 	if [ -s "$featuresPath/$dataType.tmp" ] && [ -r "$datasetsPath/$dataType.pkl" ]; then
 		dataTypes="$dataTypes $dataType"
+		numDataTypes=$((numDataTypes + 1))
 	fi
 done
 [ $DEBUG ] && echo "*** DEBUG: $0: dataTypes: $dataTypes" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: numDataTypes: $numDataTypes" >&2
 if [ -z "$dataTypes" ]; then
 	echo "        No warning/error messages to compare against bugs"
 	[ $outFile ] && echo "bugs: none" >> $outFile
@@ -133,15 +136,37 @@ else
 		scores="$scores ${idsScoresArray[(($i+1))]}"
 		i=$((i + 2))
 	done
-	[ $outFile ] && echo "bugs: $bugs" >> "$outFile"
-	i=1
+#	[ $outFile ] && echo "bugs: $bugs" >> "$outFile"
+	bugsToPrint=""
+	normalizedScores=""
+	i=0
 	for bug in $bugs; do
-		score=`echo $scores | cut -d' ' -f$i`
-		echo "        Bug: $bug, Score: $score"
-		[ $outFile ] && echo "bugs-score-$bug: $score" >> "$outFile"
 		i=$((i + 1))
+		score=`echo $scores | cut -d' ' -f$i`
+		normalizedScore=`echo "scale=2 ; $score / $numDataTypes" | bc`
+                if (( $(echo "$normalizedScore <= .50" |bc -l) )); then
+                        break
+                fi
+		bugsToPrint="$bugsToPrint $bug"
+		normalizedScores="$normalizedScores $normalizedScore"
 	done
-	[ $outFile ] && echo "bugs-result: -1" >> "$outFile"
+	[ $DEBUG ] && echo "*** DEBUG: $0: bugsToPrint: $bugsToPrint" >&2
+	[ $DEBUG ] && echo "*** DEBUG: $0: normalizedScores: $normalizedScores" >&2
+	if [ -z "$bugsToPrint" ]; then
+	        echo "        Bugs: none"
+		[ $outFile ] && echo "bugs: none" >> "$outFile"
+		[ $outFile ] && echo "bugs-result: 1" >> "$outFile"
+	else
+		[ $outFile ] && echo "bugs: $bugsToPrint" >> "$outFile"
+		i=0
+		for bugToPrint in $bugsToPrint; do
+			i=$((i + 1))
+			normalizedScore=`echo $normalizedScores | cut -d' ' -f$i`
+			echo "        Bug: $bugToPrint, Score: $normalizedScore"
+			[ $outFile ] && echo "bugs-score-$bugToPrint: $normalizedScore" >> "$outFile"
+		done
+		[ $outFile ] && echo "bugs-result: -1" >> "$outFile"
+	fi
 fi
 
 exit 0

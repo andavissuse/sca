@@ -46,25 +46,20 @@ if [ ! -d "$featuresPath" ] || [ $outFile ] && [ ! -f "$outFile" ]; then
 	exit 1
 fi
 
-# conf files
+# conf file
 curPath=`dirname "$(realpath "$0")"`
-mainConfFile="/usr/etc/sca-L0.conf"
-extraConfFiles=`find /usr/etc -name "sca-L0?.conf"`
-if [ ! -r "$mainConfFile" ]; then
-        mainConfFile="/etc/sca-L0.conf"
-        extraConfFiles=`find /etc -name "sca-L0?.conf"`
-        if [ ! -r "$mainConfFile" ]; then
-                mainConfFile="$curPath/../sca-L0.conf"
-                extraConfFiles=`find $curPath/.. -name "sca-L0?.conf"`
-                if [ ! -r "$mainConfFile" ]; then
+confFile="/etc/sca-L0.conf"
+if [ ! -r "$confFile" ]; then
+        confFile="/etc/sca-L0.conf"
+        if [ ! -r "$confFile" ]; then
+                confFile="$curPath/../sca-L0.conf"
+                if [ ! -r "$confFile" ]; then
                         exitError "No sca-L0 conf file info; exiting..."
                 fi
         fi
 fi
-source $mainConfFile
-for extraConfFile in $extraConfFiles; do
-        source ${extraConfFile}
-done
+source $confFile
+[ $DEBUG ] && echo "*** DEBUG: $0: confFile: $confFile" >&2
 binPath="$SCA_BIN_PATH"
 susedataPath="$SCA_SUSEDATA_PATH"
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath, susedataPath: $susedataPath" >&2

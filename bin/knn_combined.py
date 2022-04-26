@@ -82,13 +82,13 @@ def main(argv):
         else:
             knn_args = class_file + " " + dataset_files[dataset_num] + " " + feature_files[dataset_num] + " " + dist_metrics[dataset_num] + " " + radii[dataset_num]
         df_knn_result = knn.main(knn_args.split())
+        df_knn_result = df_knn_result.sort_values('Score', ascending='False').drop_duplicates(subset='Id', keep='first')
 #        df_knn_result.columns = df_knn_result.iloc[0]
         if DEBUG == "TRUE":
             print("*** DEBUG: " + sys.argv[0] + ": df_knn_result:", df_knn_result, file=sys.stderr)
         df_total_nns = df_total_nns.append(df_knn_result)
-    if DEBUG == "TRUE":
-        print("*** DEBUG: " + sys.argv[0] + ": df_total_nns:", df_total_nns, file=sys.stderr)
-
+        if DEBUG == "TRUE":
+            print("*** DEBUG: " + sys.argv[0] + ": df_total_nns:", df_total_nns, file=sys.stderr)
     # inner-join all results
 #    df_merged = reduce(lambda left,right: pd.merge(left, right, on=['md5sum', 'Id']), dfs_nns)
 #    df_merged = dfs_nns[0]

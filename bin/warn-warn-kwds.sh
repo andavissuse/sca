@@ -41,17 +41,20 @@ else
         scDir="$1"
 fi
 
-# config file
+# conf file
 curPath=`dirname "$(realpath "$0")"`
-confFile="/usr/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
 confFile="/etc/sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-confFile="$curPath/../sca-L0.conf"
-[ -r "$confFile" ] && source ${confFile}
-if [ -z "$SCA_HOME" ]; then
-        exitError "No sca-L0.conf file info; exiting..."
+if [ ! -r "$confFile" ]; then
+        confFile="/usr/etc/sca-L0.conf"
+        if [ ! -r "$confFile" ]; then
+                confFile="$curPath/../sca-L0.conf"
+                if [ ! -r "$confFile" ]; then
+                        exitError "No sca-L0 conf file info; exiting..."
+                fi
+        fi
 fi
+source $confFile
+[ $DEBUG ] && echo "*** DEBUG: $0: confFile: $confFile" >&2
 
 logName="/var/log/warn"
 if [ $DEBUG ]; then
