@@ -6,11 +6,11 @@
 # susedata is ../susedata, but these may be overridden with
 # optional arguments.
 #
-# Inputs: (optional with -c) categories-to-check (defined in sca-L0*.conf files)
-# 	  (optional with -p) path to datasets
-#	  (optional with -s) path to susedata
-#	  (optional w/ -t) tmp path (for uncompressing supportconfig)
-#         (optional with -o) output file for terse report (in addition to stdout)
+# Inputs: (optional with -c) category-to-check (default checks all categories defined in sca-L0.conf)
+# 	  (optional with -p) path to datasets (default defined in sca-L0.conf)
+#	  (optional with -s) path to susedata (default defined in sca-L0.conf) 
+#	  (optional w/ -t) tmp path (default defined in sca-L0.conf)
+#         (optional with -o) output file for short-form name:value report (in addition to stdout)
 #	  supportconfig tarball 
 #
 # Output: Various info about supportconfig
@@ -24,13 +24,13 @@ function usage() {
 	echo "Options:"
 	echo "    -d        debug"
 	echo "    -v        version"
-	echo "    -c        categories - comma-separated list of categories to check (default checks all)"
-	echo "                     categories: $1" 
-	echo "    -p        datasets-path (default is /opt/suse/sca/datasets)"
-	echo "    -s        susedata-path (default is /opt/suse/sca/susedata)"
-	echo "    -t        tmp-path (default is /tmp)"
+	echo "    -c        category (default checks all categories):"
+	echo "                     $allCategories" 
+	echo "    -p        datasets-path (default: $datasetsPath)"
+	echo "    -s        susedata-path (default: $susedataPath)"
+	echo "    -t        tmp-path (default: $tmpPath)"
 	echo "    -o        file for short-form name:value output"
-	echo "Example: sca-L0.sh -c os,system -o /tmp/sca-L0.out /var/log/supportconfig.tgz"
+	echo "Example: sca-L0.sh -c os -c system -o /tmp/sca-L0.out /var/log/scc_*.txz"
 }
 
 function exitError() {
@@ -108,17 +108,16 @@ binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
 susedataPath="$SCA_SUSEDATA_PATH"
 tmpPath="$SCA_TMP_PATH"
-categories="$allCategories"
 
 # arguments
 if [ "$1" = "--help" ]; then
-	usage "$allCategories"
+	usage
 	exit 0
 fi
 while getopts 'hdvc:p:s:t:o:' OPTION; do
         case $OPTION in
                 h)
-                        usage "$allCategories"
+                        usage
 			exit 0
                         ;;
                 d)
@@ -129,7 +128,7 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 			VERSION_ARG=1
 			;;
 		c)
-			categories=`echo $OPTARG | tr ',' ' '`
+			categories+="$OPTARG "
 			;;	
 		p)
 			datasetsPath="$OPTARG"
@@ -169,12 +168,15 @@ while getopts 'hdvc:p:s:t:o:' OPTION; do
 done
 shift $((OPTIND - 1))
 if [ ! $VERSION_ARG ] && [ ! "$1" ]; then
-        usage "$allCategories"
+        usage
         exit 1
 else
 	scTar="$1"
 fi
 
+if [ -z "$categories" ]; then
+	categories="$allCategories"
+fi
 [ $DEBUG ] && echo "*** DEBUG: $0: mainConfFile: $mainConfFile" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: extraConfFiles: $extraConfFiles" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scaHome: $scaHome" >&2
@@ -212,7 +214,6 @@ extractScInfo
 osOtherInfo
 
 # check categories
-[ $DEBUG ] && echo "*** DEBUG: $0: allCategories: $allCategories" >&2
 for category in $allCategories; do
 	[ $DEBUG ] && echo "*** DEBUG: $0: category: $category" >&2
 	if echo $categories | grep -q $category; then
@@ -222,7 +223,7 @@ for category in $allCategories; do
 		categoryUpper=`echo $category | tr '[:lower:]' '[:upper:]' | tr '-' '_'`
 		tags="SCA_${categoryUpper}_TAGS"
 		for tag in ${!tags}; do
-			[ $DEBUG ] && echo "*** DEBUG: $0: tag: $tag" >&2 ||
+			[ $DEBUG ] && echo "*** DEBUG: $0: tag: $tag" >&2
 			[ $outFile ] && echo "$tag: NA" >> $outFile
 		done
 	fi
