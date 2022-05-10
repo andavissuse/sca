@@ -216,13 +216,13 @@ osOtherInfo
 for category in $allCategories; do
 	[ $DEBUG ] && echo "*** DEBUG: $0: category: $category" >&2
 	if echo $categories | grep -q $category; then
-		[ $DEBUG ] && $binPath/$category-info.sh "$debugOpt" "$tmpDir" "$outFile"
-		[ ! $DEBUG ] && $binPath/$category-info.sh "$tmpDir" "$outFile"
+		[ $DEBUG ] && $binPath/$category-info.sh "$debugOpt" "$tmpDir" "$outFile" ||
+		$binPath/$category-info.sh "$tmpDir" "$outFile"
 	else
 		categoryUpper=`echo $category | tr '[:lower:]' '[:upper:]' | tr '-' '_'`
 		tags="SCA_${categoryUpper}_TAGS"
 		for tag in ${!tags}; do
-			[ $DEBUG ] && echo "*** DEBUG: $0: tag: $tag" >&2
+			[ $DEBUG ] && echo "*** DEBUG: $0: tag: $tag" >&2 ||
 			[ $outFile ] && echo "$tag: NA" >> $outFile
 		done
 	fi
