@@ -103,12 +103,6 @@ for extraConfFile in $extraConfFiles; do
 done
 scaHome="$SCA_HOME"
 allCategories="$SCA_CATEGORIES"
-p1Categories="$SCA_P1_CATEGORIES"
-p1Actions="$SCA_P1_ACTIONS"
-p2Categories="$SCA_P2_CATEGORIES"
-p2Actions="$SCA_P2_ACTIONS"
-p3Categories="$SCA_P3_CATEGORIES"
-p3Actions="$SCA_P3_ACTIONS"
 allDatatypes=`echo "$SCA_DATATYPES" | xargs -n1 | sort -u | xargs`
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
@@ -212,12 +206,6 @@ echo ">>> sca-L0 timestamp: $ts"
 echo ">>> sca-L0 version: $scaVer"
 [ $outFile ] && echo "sca-l0-version: $scaVer" >> $outFile
 [ $outFile ] && echo "sca-l0-default-checks: $allCategories" >> $outFile
-[ $outFile ] && [ ! -z "$p1Categories" ] && echo "sca-l0-p1-categories: $p1Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p1Actions" ] && echo "sca-l0-p1-actions: $p1Actions" >> $outFile
-[ $outFile ] && [ ! -z "$p2Categories" ] && echo "sca-l0-p2-categories: $p2Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p2Actions" ] && echo "sca-l0-p2-actions: $p2Actions" >> $outFile
-[ $outFile ] && [ ! -z "$p3Categories" ] && echo "sca-l0-p3-categories: $p3Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p3Actions" ] && echo "sca-l0-p3-actions: $p3Actions" >> $outFile
 
 # these steps are always executed (regardless of categories)
 untarAndCheck
