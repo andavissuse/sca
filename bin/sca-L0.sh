@@ -243,4 +243,11 @@ for category in $allCategories; do
 done
 rm -rf $tmpDir
 
+# parse the output
+parser="$binPath/sca-parser.sh"
+if [ -x "$parser" ]; then
+	[ $DEBUG ] && $parser "$debugOpt" -c $mainConfFile $outFile ||
+	$parser-c $confFile $outFile
+fi	
+
 exit 0
