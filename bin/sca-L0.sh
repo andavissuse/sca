@@ -35,7 +35,7 @@ function usage() {
 
 function exitError() {
 	echo "$1"
-	rm -rf $tmpDir 2>/dev/null
+	[ ! -z "$tmpDir" ] && rm -rf $tmpDir 2>/dev/null
 	exit 1
 }
 
@@ -82,24 +82,26 @@ function supportconfigDate() {
 # main routine
 #
 
-# conf files
 curPath=`dirname "$(realpath "$0")"`
-mainConfFile="/etc/sca-L0.conf"
-extraConfFiles=`find /etc -maxdepth 1 -name "sca-L0?.conf"`
-if [ ! -r "$mainConfFile" ]; then
-	mainConfFile="/usr/etc/sca-L0.conf"
-	extraConfFiles=`find /usr/etc -maxdepth 1 -name "sca-L0?.conf"`
-	if [ ! -r "$mainConfFile" ]; then
-		mainConfFile="$curPath/../sca-L0.conf"
-		extraConfFiles=`find $curPath/.. -maxdepth 1 -name "sca-L0?.conf"`
-		if [ ! -r "$mainConfFile" ]; then
-			exitError "No sca-L0 conf file info; exiting..."
-		fi
+
+# conf files
+mainConfFiles="${curPath}/../sca-L0.conf /etc/opt/sca/sca-L0.conf"
+for mainConfFile in ${mainConfFiles}; do
+	if [ -r "$mainConfFile" ]; then
+		found="true"
+		source $mainConfFile
+		break
 	fi
+done
+if [ -z "$found" ]; then
+	exitError "No sca-L0 conf file info; exiting..."
 fi
-source $mainConfFile
-for extraConfFile in $extraConfFiles; do
-	source ${extraConfFile}
+extraConfFiles="${curPath}/../sca-L0+.conf /etc/opt/sca/sca-L0+.conf"
+for extraConfFile in ${extraConfFiles}; do
+	if [ -r "$extraConfFile" ]; then
+		source $extraConfFile
+		break
+	fi
 done
 scaHome="$SCA_HOME"
 allCategories="$SCA_CATEGORIES"
@@ -113,6 +115,7 @@ allDatatypes=`echo "$SCA_DATATYPES" | xargs -n1 | sort -u | xargs`
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
 susedataPath="$SCA_SUSEDATA_PATH"
+parserBinPath="$SCA_PARSER_BIN_PATH"
 tmpPath="$SCA_TMP_PATH"
 
 # arguments
@@ -184,7 +187,7 @@ if [ -z "$categories" ]; then
 	categories="$allCategories"
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: mainConfFile: $mainConfFile" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: extraConfFiles: $extraConfFiles" >&2
+[ $DEBUG ] && echo "*** DEBUG: $0: extraConfFile: $extraConfFile" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scaHome: $scaHome" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: allCategories: $allCategories" >&2
@@ -212,12 +215,12 @@ echo ">>> sca-L0 timestamp: $ts"
 echo ">>> sca-L0 version: $scaVer"
 [ $outFile ] && echo "sca-l0-version: $scaVer" >> $outFile
 [ $outFile ] && echo "sca-l0-default-checks: $allCategories" >> $outFile
-[ $outFile ] && [ ! -z "$p1Categories" ] && echo "sca-l0-p1-categories: $p1Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p1Actions" ] && echo "sca-l0-p1-actions: $p1Actions" >> $outFile
-[ $outFile ] && [ ! -z "$p2Categories" ] && echo "sca-l0-p2-categories: $p2Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p2Actions" ] && echo "sca-l0-p2-actions: $p2Actions" >> $outFile
-[ $outFile ] && [ ! -z "$p3Categories" ] && echo "sca-l0-p3-categories: $p3Categories" >> $outFile
-[ $outFile ] && [ ! -z "$p3Actions" ] && echo "sca-l0-p3-actions: $p3Actions" >> $outFile
+[ $outFile ] && echo "sca-l0-p1-categories: $p1Categories" >> $outFile
+[ $outFile ] && echo "sca-l0-p1-actions: $p1Actions" >> $outFile
+[ $outFile ] && echo "sca-l0-p2-categories: $p2Categories" >> $outFile
+[ $outFile ] && echo "sca-l0-p2-actions: $p2Actions" >> $outFile
+[ $outFile ] && echo "sca-l0-p3-categories: $p3Categories" >> $outFile
+[ $outFile ] && echo "sca-l0-p3-actions: $p3Actions" >> $outFile
 
 # these steps are always executed (regardless of categories)
 untarAndCheck
@@ -244,10 +247,10 @@ done
 rm -rf $tmpDir
 
 # parse the output
-parser="$binPath/sca-parser.sh"
+parser="$parserBinPath/sca-parser.sh"
 if [ -x "$parser" ]; then
 	[ $DEBUG ] && $parser "$debugOpt" -c $mainConfFile $outFile ||
-	$parser-c $confFile $outFile
+	$parser -c $mainConfFile $outFile
 fi	
 
 exit 0

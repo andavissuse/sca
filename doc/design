@@ -1,0 +1,30 @@
+- Goal:  Based on a system supportconfig, use comparisons against existing SR, bug,
+  and certification supportconfigs to provide info and suggest "next steps" to improve
+  system supportability and reliability.  
+
+- Structure:  At a very high level, there are three elements:  1) questions to be asked,
+  2) code used to answer the questions, and 3) data used by the code to answer the
+  questions.  A description of each element is provided below.
+ 
+- Questions:  A question is anything that we want to know about system.
+- There are no bad questions; the idea is to keep this element focused on what the human
+  wants to know without worrying about how or whether the software will be able to answer
+  the question.
+- A question might be very defined (e.g., "Is package xyz installed?").
+- Or a question might be "fuzzy" (e.g., "Does this system look like any bug reports?").
+- Questions may be organized into categories.  Conceptually, it is assumed that the
+  questions in a category would be related in some way, but there are no actual restrictions
+  on how a category is defined.
+- Questions and categories are reflected by variables in the config file.
+
+- Code:  The code is comprised of a top-level script which invokes other scripts to handle
+  the categories and questions.
+- The code/script which handles a specific question should obviously try to "answer" the
+  question.  But some questions can't be perfectly "answered"; in such cases, the script
+  should simply try to provide helpful information.  Note that the questions are "sacred";
+  the process of implementing the code should never redefine the question.
+
+- Data:  The data is all the existing data that can be "mined" and compared against to answer
+  the questions.
+- It is expected that the data will need to be transformed from its original state (raw
+  supportconfigs) to a state (datasets) that can be used by the code.

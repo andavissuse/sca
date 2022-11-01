@@ -16,6 +16,12 @@ function usage() {
         exit $1
 }
 
+function exitError() {
+	echo "$1"
+	[ ! -z "$tmpDir" ] && rm -rf $tmpDir
+	exit 1
+}
+
 # arguments
 if [ "$1" = "--help" ]; then
         usage 0
@@ -40,19 +46,29 @@ else
         scDir="$1"
 fi
 
-# conf file
 curPath=`dirname "$(realpath "$0")"`
-confFile="/etc/sca-L0.conf"
-if [ ! -r "$confFile" ]; then
-        confFile="/usr/etc/sca-L0.conf"
-        if [ ! -r "$confFile" ]; then
-                confFile="$curPath/../sca-L0.conf"
-                if [ ! -r "$confFile" ]; then
-                        exitError "No sca-L0 conf file info; exiting..."
-                fi
-        fi
+
+# conf files (if not already set by calling program)
+if [ -z "$SCA_HOME" ]; then
+	mainConfFiles="${curPath}/../sca-L0.conf /etc/opt/sca/sca-L0.conf"
+	for mainConfFile in ${mainConfFiles}; do
+		if [ -r "$mainConfFile" ]; then
+			found="true"
+			source $mainConfFile
+			break
+		fi
+	done
+	if [ -z "$found" ]; then
+		exitError "No sca-L0 conf file info; exiting..."
+	fi
+	extraConfFiles="${curPath}/../sca-L0+.conf /etc/opt/sca/sca-L0+.conf"
+	for extraConfFile in ${extraConfFiles}; do
+		if [ -r "$extraConfFile" ]; then
+			source $extraConfFile
+			break
+		fi
+	done
 fi
-source $confFile
 [ $DEBUG ] && echo "*** DEBUG: $0: confFile: $confFile" >&2
 
 logName="/var/log/messages"
