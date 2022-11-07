@@ -1,9 +1,9 @@
-# sca-L0
-Utility for doing Level-0 analysis on supportconfigs (top-level executable is sca-L0.sh).  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
+# sca
+Utility for analyzing supportconfigs (top-level executable is sca.sh).  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
 # Structure
 
-## sca-L0.conf, sca-L0+.conf
+## sca.conf, sca+.conf
 Config file containing variables (e.g., paths, datatypes) for use by scripts
 
 ## bin directory
@@ -13,17 +13,17 @@ Scripts to analyze supportconfigs
 
 ## Analyzing a supportconfig
 Prerequisites:
-* susedata files in the directories specified in sca-L0.conf
-* Optional, only required for analyzing srs and bugs:  datasets in the directories specified in sca-L0+.conf
+* susedata files in the directories specified in sca.conf
+* Optional, only required for analyzing srs and bugs:  datasets in the directories specified in sca+.conf
 
 To analyze a supportconfig:
-* Run `sca-L0.sh <supportconfig-tarball>`.  This will:
+* Run `sca.sh <supportconfig-tarball>`.  This will:
   * uncompress the supportconfig
   * extract data/features
   * report information (e.g., OS version, support status, etc.)
 
-# sca-L0 results
-By default (if invoked w/o -c option), sca-L0 outputs information for all categories to stdout.  Default categories are os, system, kernel, kmods, warning-cmds, error-cmds.  Optional (sca-L0+) categories are srs, bugs.
+# sca results
+By default (if invoked w/o -c option), sca outputs information for all categories to stdout.  Default categories are os, system, kernel, kmods, warning-cmds, error-cmds.  Optional (sca+) categories are srs, bugs.
 
 The "-c" option can be used to restrict checks/output to specific categories.
 

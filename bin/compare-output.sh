@@ -1,10 +1,10 @@
 #!/bin/sh
 
 #
-# This script compares 2 sca-L0 output files and reports on
+# This script compares 2 sca name:value output files and reports on
 # differences.
 #
-# Inputs: 1) 2 or more sca-L0 output files
+# Inputs: 1) 2 or more sca name:value output files
 #
 # Output: csv-separated data
 #
@@ -16,7 +16,7 @@ categories="os system kernel kmods warning-cmds error-cmds srs bugs"
 
 # functions
 function usage() {
-	echo "Usage: `basename $0` [-d(ebug)] [ -c categories (comma-separated)] [-o csv-output-file] sca-L0-output-file1 sca-L0-output-file2 [ sca-L0-output-file3 ] ..."
+	echo "Usage: `basename $0` [-d(ebug)] [ -c categories (comma-separated)] [-o csv-output-file] sca-output-file1 sca-output-file2 [ sca-output-file3 ] ..."
 	echo "       Categories: os system kernel kmods warning-cmds error-cmds srs bugs"
         exit $1
 }
@@ -52,18 +52,18 @@ fi
 declare -a scaFiles="$@"
 for scaFile in $scaFiles; do
 	if [ ! -f $scaFile ]; then
-		echo "sca-L0 output file $scaFile does not exist, exiting..."
+		echo "sca output file $scaFile does not exist, exiting..."
 		exit 1
 	fi
 done
 [ $DEBUG ] && echo "*** DEBUG: $0: categories: $categories"
 [ $DEBUG ] && echo "*** DEBUG: $0: scaOutFiles: $scaOutFiles"
 
-# Required fields (always in sca-L0 output)
+# Required fields (always in sca output)
 scaFields="sca-l0-timestamp sca-l0-version sca-l0-default-checks"
 supportconfigFields="supportconfig supportconfig-date"
 
-# Optional fields (may be in sca-L0 output)
+# Optional fields (may be in sca output)
 osFields="os os-support"
 systemFields="system system-certs"
 kernelFields="kernel kernel-status"

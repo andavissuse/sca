@@ -50,7 +50,7 @@ curPath=`dirname "$(realpath "$0")"`
 
 # conf files (if not already set by calling program)
 if [ -z "$SCA_HOME" ]; then
-	mainConfFiles="${curPath}/../sca-L0.conf /etc/opt/sca/sca-L0.conf"
+	mainConfFiles="${curPath}/../sca.conf /etc/opt/sca/sca.conf"
 	for mainConfFile in ${mainConfFiles}; do
 		if [ -r "$mainConfFile" ]; then
 			found="true"
@@ -59,9 +59,9 @@ if [ -z "$SCA_HOME" ]; then
 		fi
 	done
 	if [ -z "$found" ]; then
-		exitError "No sca-L0 conf file info; exiting..."
+		exitError "No sca confg file; exiting..."
 	fi
-	extraConfFiles="${curPath}/../sca-L0+.conf /etc/opt/sca/sca-L0+.conf"
+	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
 	for extraConfFile in ${extraConfFiles}; do
 		if [ -r "$extraConfFile" ]; then
 			source $extraConfFile
