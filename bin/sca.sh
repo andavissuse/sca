@@ -206,18 +206,18 @@ tmpDir=`mktemp -p $tmpPath -d`
 tsIso=`date +"%Y-%m-%dT%H:%M:%S"`
 ts=`date -d "$tsIso" +%s`
 echo ">>> sca timestamp: $ts"
-[ $outFile ] && echo "sca-l0-timestamp: $ts" >> $outFile
+[ $outFile ] && echo "sca-timestamp: $ts" >> $outFile
 
 # report sca info
 echo ">>> sca version: $scaVer"
-[ $outFile ] && echo "sca-l0-version: $scaVer" >> $outFile
-[ $outFile ] && echo "sca-l0-default-checks: $allCategories" >> $outFile
-[ $outFile ] && echo "sca-l0-p1-categories: $p1Categories" >> $outFile
-[ $outFile ] && echo "sca-l0-p1-actions: $p1Actions" >> $outFile
-[ $outFile ] && echo "sca-l0-p2-categories: $p2Categories" >> $outFile
-[ $outFile ] && echo "sca-l0-p2-actions: $p2Actions" >> $outFile
-[ $outFile ] && echo "sca-l0-p3-categories: $p3Categories" >> $outFile
-[ $outFile ] && echo "sca-l0-p3-actions: $p3Actions" >> $outFile
+[ $outFile ] && echo "sca-version: $scaVer" >> $outFile
+[ $outFile ] && echo "sca-default-checks: $allCategories" >> $outFile
+[ $outFile ] && echo "sca-p1-categories: $p1Categories" >> $outFile
+[ $outFile ] && echo "sca-p1-actions: $p1Actions" >> $outFile
+[ $outFile ] && echo "sca-p2-categories: $p2Categories" >> $outFile
+[ $outFile ] && echo "sca-p2-actions: $p2Actions" >> $outFile
+[ $outFile ] && echo "sca-p3-categories: $p3Categories" >> $outFile
+[ $outFile ] && echo "sca-p3-actions: $p3Actions" >> $outFile
 
 # these steps are always executed (regardless of categories)
 untarAndCheck
