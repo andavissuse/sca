@@ -1,7 +1,8 @@
 #!/bin/sh
 
 #
-# This script outputs information about bugs.
+# This script outputs information about bugs.  The script requires SUSE-internal
+# datasets to be present; otherwise the script will report NA.
 #
 # Inputs: 1) path containing features files
 #	  2) short-form output file (optional)
@@ -67,13 +68,13 @@ if [ -z "$SCA_HOME" ]; then
 	if [ -z "$found" ]; then
 	    	exitError "No sca config file; exiting..."
 	fi
-	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
-	for extraConfFile in ${extraConfFiles}; do
-		if [ -r "$extraConfFile" ]; then
-			source $extraConfFile
-			break
-		fi
-	done
+#	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
+#	for extraConfFile in ${extraConfFiles}; do
+#		if [ -r "$extraConfFile" ]; then
+#			source $extraConfFile
+#			break
+#		fi
+#	done
 fi
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
@@ -83,6 +84,13 @@ bugsRadius="$SCA_BUGS_RADIUS"
 
 # start
 echo ">>> Checking bugs..."
+bugsDataset="$datasetsPath/bugs.dat"
+if [ ! -r "$bugsDataset" ]; then
+	echo "        No bugs.dat dataset to compare against"
+	[ $outFile ] && echo "bugs: NA" >> $outFile
+	[ $outFile ] && echo "bugs-result: 0" >> $outFile
+	exit 0
+fi
 
 dataTypes=""
 numDataTypes=0
@@ -102,7 +110,7 @@ if [ -z "$dataTypes" ]; then
 fi
 
 # build datasets argument to pass to knn_combined
-knnCombinedArgs="$datasetsPath/bugs.dat"
+knnCombinedArgs="$bugsDataset"
 for dataType in $dataTypes; do
 #	metricVar='$'`echo SCA_BUGS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
 #	eval metric=$metricVar

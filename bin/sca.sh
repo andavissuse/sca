@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# This is the main sca script that outputs analyzes a supportconfig.
+# This is the main sca script that analyzes supportconfig data.
 #
 # Inputs: (optional with -c) category-to-check (default checks all categories defined in sca.conf)
 # 	  (optional with -p) path to datasets (default defined in sca.conf)
@@ -93,13 +93,13 @@ done
 if [ -z "$found" ]; then
 	exitError "No sca config file; exiting..."
 fi
-extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
-for extraConfFile in ${extraConfFiles}; do
-	if [ -r "$extraConfFile" ]; then
-		source $extraConfFile
-		break
-	fi
-done
+#extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
+#for extraConfFile in ${extraConfFiles}; do
+#	if [ -r "$extraConfFile" ]; then
+#		source $extraConfFile
+#		break
+#	fi
+#done
 scaHome="$SCA_HOME"
 allCategories="$SCA_CATEGORIES"
 p1Categories="$SCA_P1_CATEGORIES"
@@ -184,7 +184,7 @@ if [ -z "$categories" ]; then
 	categories="$allCategories"
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: mainConfFile: $mainConfFile" >&2
-[ $DEBUG ] && echo "*** DEBUG: $0: extraConfFile: $extraConfFile" >&2
+#[ $DEBUG ] && echo "*** DEBUG: $0: extraConfFile: $extraConfFile" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: scaHome: $scaHome" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: binPath: $binPath" >&2
 [ $DEBUG ] && echo "*** DEBUG: $0: allCategories: $allCategories" >&2

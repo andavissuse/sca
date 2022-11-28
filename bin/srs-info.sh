@@ -67,13 +67,13 @@ if [ -z "$SCA_HOME" ]; then
 	if [ -z "$found" ]; then
 		exitError "No sca config file; exiting..."
 	fi
-	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
-	for extraConfFile in ${extraConfFiles}; do
-		if [ -r "$extraConfFile" ]; then
-			source $extraConfFile
-			break
-		fi
-	done
+#	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
+#	for extraConfFile in ${extraConfFiles}; do
+#		if [ -r "$extraConfFile" ]; then
+#			source $extraConfFile
+#			break
+#		fi
+#	done
 fi
 binPath="$SCA_BIN_PATH"
 datasetsPath="$SCA_DATASETS_PATH"
@@ -83,6 +83,13 @@ srsRadius="$SCA_SRS_RADIUS"
 
 # start
 echo ">>> Checking SRs..."
+srsDataset="$datasetsPath/srs.dat"
+if [ ! -r "$srsDataset" ]; then
+	echo "        No srs.dat dataset to compare against"
+	[ $outFile ] && echo "srs: NA" >> $outFile
+	[ $outFile ] && echo "srs-result: 0" >> $outFile
+	exit 0
+fi
 
 dataTypes=""
 numDataTypes=0
@@ -102,7 +109,7 @@ if [ -z "$dataTypes" ]; then
 fi
 
 # build datasets argument to pass to knn_combined
-knnCombinedArgs="$datasetsPath/srs.dat"
+knnCombinedArgs="$srsDataset"
 for dataType in $dataTypes; do
 #	metricVar='$'`echo SCA_SRS_"${dataType^^}"_METRIC | sed "s/-/_/g"`
 #	eval metric=$metricVar

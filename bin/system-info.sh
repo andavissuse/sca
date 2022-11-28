@@ -70,13 +70,13 @@ if [ -z "$SCA_HOME" ]; then
 	if [ -z "$found" ]; then
 		exitError "No sca config file; exiting..."
 	fi
-	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
-	for extraConfFile in ${extraConfFiles}; do
-		if [ -r "$extraConfFile" ]; then
-			source $extraConfFile
-			break
-		fi
-	done
+#	extraConfFiles="${curPath}/../sca+.conf /etc/opt/sca/sca+.conf"
+#	for extraConfFile in ${extraConfFiles}; do
+#		if [ -r "$extraConfFile" ]; then
+#			source $extraConfFile
+#			break
+#		fi
+#	done
 fi
 [ $DEBUG ] && echo "*** DEBUG: $0: confFile: $confFile" >&2
 binPath="$SCA_BIN_PATH"
