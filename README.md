@@ -1,5 +1,5 @@
 # sca
-Utility for analyzing supportconfigs (top-level executable is sca.sh).  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
+Utility for analyzing SUSE supportconfig data.  TReports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
 # Structure
 
