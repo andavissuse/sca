@@ -1,10 +1,10 @@
 # sca
-Utility for analyzing SUSE supportconfig data.  TReports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
+Utility for analyzing SUSE supportconfig data.  Reports all info in long-form output (to stdout) and short-form output (to file specified with -o option).
 
 # Structure
 
 ## sca.conf, sca+.conf
-Config file containing variables (e.g., paths, datatypes) for use by scripts
+Config file containing environment variables (e.g., paths, datatypes) for use by scripts.  sca.conf is for L0 analysis, sca+.conf is for L1 analysis.
 
 ## bin directory
 Scripts to analyze supportconfigs
@@ -23,9 +23,9 @@ To analyze a supportconfig:
   * report information (e.g., OS version, support status, etc.)
 
 # sca results
-By default (if invoked w/o -c option), sca outputs information for all categories to stdout.  Default categories are os, system, kernel, kmods, warning-cmds, error-cmds.  Optional (sca+) categories are srs, bugs.
+By default (if invoked w/o -c option), sca outputs information for all categories to stdout.  Default categories are os, system, kernel, kmods, warning-cmds, error-cmds.  Optional (sca+) categories are SRs and bugs.
 
-The "-c" option can be used to restrict checks/output to specific categories.
+The "-c" option can be used to restrict checks to specific categories.
 
 The "-o" option writes short-form output (name-value pairs) to the file specified, along with an overall "1 (good)/-1 (bad)/0 (need-more-info)" result for each category.  Results are determined as follows:
 
